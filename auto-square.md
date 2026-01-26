@@ -69,15 +69,15 @@ function driveForward () {
 }
 ```
 
-## Step 9: Test Forward Movement
-From ``||functions:Functions||``, drag ``||functions:call driveForward||`` into ``||basic:on start||`` at the end. Download to your micro:bit and test! Adjust the **forwardTime** variable if needed.
+## Step 9: Test Forward with Button
+From ``||input:Input||``, drag ``||input:on button A pressed||`` into your workspace. Inside it, add ``||functions:call driveForward||`` from ``||functions:Functions||``.
+
+Download to your micro:bit and press **A** to test! Adjust the **forwardTime** variable if the buggy doesn't move far enough.
 ```blocks
-let turnTime = 0
 let forwardTime = 0
-basic.showIcon(IconNames.Heart)
-forwardTime = 1000
-turnTime = 500
-driveForward()
+input.onButtonPressed(Button.A, function () {
+    driveForward()
+})
 ```
 
 ## Step 10: Create Turn Function
@@ -117,76 +117,64 @@ function turnRight () {
 }
 ```
 
-## Step 14: Build the Square - Side 1
-In ``||basic:on start||``, add ``||functions:call driveForward||`` and ``||functions:call turnRight||`` at the end.
+## Step 14: Start Square on Button A
+Now let's build the square! Inside your ``||input:on button A pressed||`` block (where you tested forward movement), add ``||functions:call turnRight||`` after the ``||functions:driveForward||``.
 ```blocks
-let turnTime = 0
-let forwardTime = 0
-basic.showIcon(IconNames.Heart)
-forwardTime = 1000
-turnTime = 500
-driveForward()
-turnRight()
+input.onButtonPressed(Button.A, function () {
+    driveForward()
+    turnRight()
+})
 ```
 
 ## Step 15: Complete the Square
-Add three more pairs of ``||functions:driveForward||`` and ``||functions:turnRight||`` to complete all four sides of the square.
+Add three more pairs of ``||functions:driveForward||`` and ``||functions:turnRight||`` inside the button A block to complete all four sides.
 ```blocks
-let turnTime = 0
-let forwardTime = 0
-basic.showIcon(IconNames.Heart)
-forwardTime = 1000
-turnTime = 500
-driveForward()
-turnRight()
-driveForward()
-turnRight()
-driveForward()
-turnRight()
-driveForward()
-turnRight()
+input.onButtonPressed(Button.A, function () {
+    driveForward()
+    turnRight()
+    driveForward()
+    turnRight()
+    driveForward()
+    turnRight()
+    driveForward()
+    turnRight()
+})
 ```
 
 ## Step 16: Add Finish Icon
-At the end of ``||basic:on start||``, add ``||basic:show icon||`` and choose the **Yes** (checkmark) icon to celebrate completion!
+At the end of the button A block, add ``||basic:show icon||`` from ``||basic:Basic||`` and choose the **Yes** (checkmark) icon to celebrate completion!
 ```blocks
-let turnTime = 0
-let forwardTime = 0
-basic.showIcon(IconNames.Heart)
-forwardTime = 1000
-turnTime = 500
-driveForward()
-turnRight()
-driveForward()
-turnRight()
-driveForward()
-turnRight()
-driveForward()
-turnRight()
-basic.showIcon(IconNames.Yes)
+input.onButtonPressed(Button.A, function () {
+    driveForward()
+    turnRight()
+    driveForward()
+    turnRight()
+    driveForward()
+    turnRight()
+    driveForward()
+    turnRight()
+    basic.showIcon(IconNames.Yes)
+})
 ```
 
 ## Step 17: Use a Loop (Challenge)
 Instead of repeating ``||functions:driveForward||`` and ``||functions:turnRight||`` four times, we can use a loop! 
 
-From ``||loops:Loops||``, drag ``||loops:repeat 4 times||`` into ``||basic:on start||`` (delete your four pairs of function calls first). Put one ``||functions:driveForward||`` and one ``||functions:turnRight||`` inside the loop.
+From ``||loops:Loops||``, drag ``||loops:repeat 4 times||`` into the button A block (delete your four pairs of function calls first). Put one ``||functions:driveForward||`` and one ``||functions:turnRight||`` inside the loop. Keep the finish icon after the loop.
 ```blocks
-let turnTime = 0
-let forwardTime = 0
-basic.showIcon(IconNames.Heart)
-forwardTime = 1000
-turnTime = 500
-for (let index = 0; index < 4; index++) {
-    driveForward()
-    turnRight()
-}
-basic.showIcon(IconNames.Yes)
+input.onButtonPressed(Button.A, function () {
+    for (let index = 0; index < 4; index++) {
+        driveForward()
+        turnRight()
+    }
+    basic.showIcon(IconNames.Yes)
+})
 ```
 
 **Why use loops?** Instead of writing the same code 4 times, the loop does it for you! This makes your code shorter and easier to change. If you wanted to make a hexagon (6 sides), you'd just change it to ``||loops:repeat 6 times||``!
 
 ## Complete! @showdialog
-Excellent work! Download your code and watch your buggy drive in a square!
+Excellent work! Download your code, place your buggy on the floor, and press **A** to watch it drive in a square!
 
 **Calibration Tips:**
 - If your square isn't closing properly, adjust the **turnTime** variable (try 450 or 550)
