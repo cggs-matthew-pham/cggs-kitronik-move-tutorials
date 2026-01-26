@@ -11,7 +11,8 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "motor-test.md"
+        "motor-test.md",
+        "auto-square.md"
     ],
     "testFiles": [
         "test.ts"
