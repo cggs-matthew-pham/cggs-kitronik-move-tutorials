@@ -89,7 +89,7 @@ function turnRight () {
 ```
 
 ## Step 11: Add Spin Movement
-From ``||Kitronik_Move_Motor:Kitronik :MOVE Motor||``, drag ``||Kitronik_Move_Motor:spin Clockwise at speed 0||`` into your turn function. Set speed to **20**.
+From ``||Kitronik_Move_Motor:Kitronik :MOVE Motor||``, drag ``||Kitronik_Move_Motor:spin Left at speed 0||`` into your turn function. Click on **Left** and change it to **Right**. Set speed to **20**.
 ```blocks
 function turnRight () {
     Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Right, 20)
