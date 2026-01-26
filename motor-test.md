@@ -17,7 +17,7 @@ input.onButtonPressed(Button.A, function () {
 ```
 
 ## Step 3: Stop on Button B
-From ``||input:Input||``, drag ``||input:on button B pressed||`` into your workspace.
+From ``||input:Input||``, drag another ``||input:on button A pressed||`` into your workspace. Click on the **A** and change it to **B**.
 
 From ``||Kitronik_Move_Motor:Kitronik :MOVE Motor||``, drag ``||Kitronik_Move_Motor:stop||`` inside the button B block.
 ```blocks
