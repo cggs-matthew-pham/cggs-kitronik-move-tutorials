@@ -1,7 +1,7 @@
-# Kitronik :MOVE Motor - Line Following with Obstacle Detection
+# Kitronik :MOVE Motor - Line Following
 
 ## Introduction @showdialog
-Program your buggy to follow a black line on the Kitronik mat and stop when it detects obstacles! You'll learn to use line sensors and the ultrasonic distance sensor.
+Program your buggy to follow a black line using line sensors! You'll learn to read sensors and control motors independently to create smooth line following.
 
 ## Step 1: Add the Extension
 Click on **Extensions** in the toolbox. Search for **Kitronik :MOVE Motor** and click to add it.
@@ -12,47 +12,53 @@ From ``||basic:Basic||``, drag ``||basic:show icon||`` into ``||basic:on start||
 basic.showIcon(IconNames.Heart)
 ```
 
-## Step 3: Create Speed Variable
-From ``||variables:Variables||``, click "Make a Variable" and create **speed**. Set it to **20** in ``||basic:on start||``. This controls how fast the buggy moves.
+## Step 3: Create Fast Speed Variable
+From ``||variables:Variables||``, click "Make a Variable" and create **fastSpeed**. Set it to **30** in ``||basic:on start||``. 
+
+This is the speed for the faster motor when turning. When the buggy needs to turn, one motor runs fast while the other runs slow, creating a smooth curve while still moving forward.
 ```blocks
-let speed = 0
+let fastSpeed = 0
 basic.showIcon(IconNames.Heart)
-speed = 20
+fastSpeed = 30
 ```
 
-## Step 4: Create Threshold Variable
-Create another variable called **threshold**. Set it to **500** in ``||basic:on start||``. This value tells the buggy what counts as "on the line" vs "off the line". You'll need to test and adjust this based on your lighting and mat!
+## Step 4: Create Slow Speed Variable
+Create another variable called **slowSpeed**. Set it to **15** in ``||basic:on start||``. 
+
+This is the speed for the slower motor when turning. By running one motor at half speed (15) and the other at full speed (30), the buggy turns smoothly without stopping or spinning in place.
 ```blocks
-let threshold = 0
-let speed = 0
+let slowSpeed = 0
+let fastSpeed = 0
 basic.showIcon(IconNames.Heart)
-speed = 20
-threshold = 500
+fastSpeed = 30
+slowSpeed = 15
 ```
 
-## Step 5: Create Obstacle Distance Variable
-Create a variable called **obstacleDistance**. Set it to **15** in ``||basic:on start||``. The buggy will stop if it detects something within 15cm.
+## Step 5: Create Threshold Variable
+Create a variable called **threshold**. Set it to **500** in ``||basic:on start||``. 
+
+This number determines what the sensors consider "on the line" vs "off the line". Lower sensor readings (darker surfaces like the black line) will be below this number. Higher readings (lighter surfaces) will be above it. You'll need to test and adjust this based on your lighting and surface!
 ```blocks
-let obstacleDistance = 0
 let threshold = 0
-let speed = 0
+let slowSpeed = 0
+let fastSpeed = 0
 basic.showIcon(IconNames.Heart)
-speed = 20
+fastSpeed = 30
+slowSpeed = 15
 threshold = 500
-obstacleDistance = 15
 ```
 
 ## Step 6: Create Running Flag
-Create a variable called **running** and set it to **false** in ``||basic:on start||``. This tracks whether the buggy should be moving.
+Create a variable called **running** and set it to **false** in ``||basic:on start||``. This tracks whether the buggy should be following the line or stopped.
 ```blocks
 let running = false
-let obstacleDistance = 0
 let threshold = 0
-let speed = 0
+let slowSpeed = 0
+let fastSpeed = 0
 basic.showIcon(IconNames.Heart)
-speed = 20
+fastSpeed = 30
+slowSpeed = 15
 threshold = 500
-obstacleDistance = 15
 running = false
 ```
 
@@ -64,7 +70,7 @@ input.onButtonPressed(Button.A, function () {
 })
 ```
 
-Download and test: Place the buggy on your mat. Press A when the left sensor is on the black line, then off the line. The numbers should be very different! Write down roughly what values you see - this helps you set the **threshold** variable.
+Download and test: Place the buggy on a black line (use electrical tape on white paper/floor). Press A when the left sensor is on the black line, then off the line. The numbers should be very different! Write down roughly what values you see - this helps you set the **threshold** variable.
 
 ## Step 8: Create Follow Line Function
 Now let's make the line following work! From ``||functions:Functions||``, create a function called **followLine**.
@@ -84,71 +90,90 @@ function followLine () {
 ```
 
 ## Step 10: Add Line Following Logic - Both On Line
-From ``||logic:Logic||``, add an ``||logic:if then else if then else||`` block (click the + to add else if sections). 
+From ``||logic:Logic||``, add an ``||logic:if then else if then else||`` block (click the **+** to add else if sections). 
 
-For the first condition, check if **both sensors** see the line: ``||logic:leftSensor < threshold AND rightSensor < threshold||``. If true, move forward.
+For the first condition, check if **both sensors** see the line: ``||logic:leftSensor < threshold AND rightSensor < threshold||``. If true, both motors run at **fastSpeed** to go straight forward.
+
+From ``||Kitronik_Move_Motor:Kitronik :MOVE Motor||``, drag ``||Kitronik_Move_Motor:motor left on forward speed 0||`` and set it to **fastSpeed**. Add another for the right motor at **fastSpeed**.
 ```blocks
+let fastSpeed = 0
 let threshold = 0
-let speed = 0
 function followLine () {
     let leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
     let rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
     if (leftSensor < threshold && rightSensor < threshold) {
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
     }
 }
 ```
 
 ## Step 11: Add Turn Left Logic
-In the first ``||logic:else if||``, check if only the **left sensor** sees the line: ``||logic:leftSensor < threshold||``. If true, spin left to get back on the line.
+In the first ``||logic:else if||``, check if only the **left sensor** sees the line: ``||logic:leftSensor < threshold||``. 
+
+This means the buggy is drifting right and needs to turn left to get back on the line. To turn left **while still moving forward**, the **left motor** runs at **slowSpeed** and the **right motor** runs at **fastSpeed**. This creates a smooth left curve.
 ```blocks
+let fastSpeed = 0
+let slowSpeed = 0
 let threshold = 0
-let speed = 0
 function followLine () {
     let leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
     let rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
     if (leftSensor < threshold && rightSensor < threshold) {
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
     } else if (leftSensor < threshold) {
-        Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, slowSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
     }
 }
 ```
 
 ## Step 12: Add Turn Right Logic
-In the second ``||logic:else if||``, check if only the **right sensor** sees the line: ``||logic:rightSensor < threshold||``. If true, spin right.
+In the second ``||logic:else if||``, check if only the **right sensor** sees the line: ``||logic:rightSensor < threshold||``.
+
+This means the buggy is drifting left and needs to turn right to get back on the line. To turn right **while still moving forward**, the **right motor** runs at **slowSpeed** and the **left motor** runs at **fastSpeed**. This creates a smooth right curve.
 ```blocks
+let fastSpeed = 0
+let slowSpeed = 0
 let threshold = 0
-let speed = 0
 function followLine () {
     let leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
     let rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
     if (leftSensor < threshold && rightSensor < threshold) {
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
     } else if (leftSensor < threshold) {
-        Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, slowSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
     } else if (rightSensor < threshold) {
-        Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Right, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, slowSpeed)
     }
 }
 ```
 
 ## Step 13: Add Off-Line Logic
-In the final ``||logic:else||``, if neither sensor sees the line, stop the motors.
+In the final ``||logic:else||``, if neither sensor sees the line, stop both motors. This means the buggy has completely lost the line.
 ```blocks
+let fastSpeed = 0
+let slowSpeed = 0
 let threshold = 0
-let speed = 0
 function followLine () {
     let leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
     let rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
     if (leftSensor < threshold && rightSensor < threshold) {
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
     } else if (leftSensor < threshold) {
-        Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, slowSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
     } else if (rightSensor < threshold) {
-        Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Right, speed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, fastSpeed)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, slowSpeed)
     } else {
-        Kitronik_Move_Motor.stop()
+        Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorLeft)
+        Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorRight)
     }
 }
 ```
@@ -164,12 +189,13 @@ input.onButtonPressed(Button.A, function () {
 ```
 
 ## Step 15: Stop on Button B
-From ``||input:Input||``, drag ``||input:on button B pressed||``. Set ``||variables:running||`` to **false**, stop the motors, and show the **No** icon.
+From ``||input:Input||``, drag ``||input:on button B pressed||``. Set ``||variables:running||`` to **false**, turn off both motors, and show the **No** icon.
 ```blocks
 let running = false
 input.onButtonPressed(Button.B, function () {
     running = false
-    Kitronik_Move_Motor.stop()
+    Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorLeft)
+    Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorRight)
     basic.showIcon(IconNames.No)
 })
 ```
@@ -185,70 +211,42 @@ basic.forever(function () {
 })
 ```
 
-**Test it!** Download to your micro:bit, place on the line, press A. The buggy should follow the line! Press B to stop. If it doesn't work well, adjust the **threshold** variable and try again.
-
-## Step 17: Create Check Obstacle Function
-Now let's add obstacle detection! From ``||functions:Functions||``, create a function called **checkObstacle**.
-```blocks
-function checkObstacle () {
-	
-}
-```
-
-## Step 18: Read Distance Sensor
-Inside **checkObstacle**, create a variable **distance** and set it to ``||Kitronik_Move_Motor:measure distance||`` (in cm).
-```blocks
-function checkObstacle () {
-    let distance = Kitronik_Move_Motor.measure(Kitronik_Move_Motor.Distance.Centimeters)
-}
-```
-
-## Step 19: Stop if Obstacle Detected
-Add an ``||logic:if||`` to check if ``||variables:distance < obstacleDistance||``. If true, set ``||variables:running||`` to **false**, stop the motors, and show the **Skull** icon to indicate an obstacle was detected.
-```blocks
-let running = false
-let obstacleDistance = 0
-function checkObstacle () {
-    let distance = Kitronik_Move_Motor.measure(Kitronik_Move_Motor.Distance.Centimeters)
-    if (distance < obstacleDistance) {
-        running = false
-        Kitronik_Move_Motor.stop()
-        basic.showIcon(IconNames.Skull)
-    }
-}
-```
-
-## Step 20: Add Obstacle Check to Loop
-In your ``||basic:forever||`` loop, call ``||functions:checkObstacle||`` **before** calling ``||functions:followLine||``. This checks for obstacles first, then follows the line if clear.
-```blocks
-let running = false
-basic.forever(function () {
-    if (running) {
-        checkObstacle()
-        followLine()
-    }
-})
-```
-
 ## Complete! @showdialog
-Excellent work! Your buggy can now follow a line AND stop when it detects obstacles!
+Excellent work! Your buggy can now follow a black line smoothly!
 
-**How to use:**
-1. Place buggy on the black line
-2. Press **A** to start line following (Arrow icon shows)
-3. Buggy follows the line automatically
-4. If it detects an obstacle within 15cm, it stops and shows Skull icon
-5. Remove the obstacle, then press **A** again to resume
-6. Press **B** anytime to stop (No icon shows)
+**How to test:**
+1. Create a straight black line using electrical tape on a white surface (or use the Kitronik mat)
+2. Place the buggy so the line is between the two sensors
+3. Press **A** to start (Arrow icon shows)
+4. The buggy should follow the line, turning smoothly to stay on track
+5. Press **B** to stop anytime (No icon shows)
 
 **Calibration Tips:**
-- If buggy doesn't follow line well, adjust **threshold** (try 400 or 600)
-- If it stops too early/late for obstacles, adjust **obstacleDistance**
-- If it moves too fast/slow, adjust **speed**
-- Make sure your mat is on a flat surface with consistent lighting
+- **If buggy doesn't follow the line:** Adjust **threshold** value (try 400 or 600). Remember: lower numbers = darker surface
+- **If buggy moves too fast/jerky:** Lower **fastSpeed** (try 20)
+- **If turns are too gentle/sharp:** Adjust the difference between **fastSpeed** and **slowSpeed** (try fastSpeed=30, slowSpeed=10 for sharper turns)
+- **Best results:** Consistent lighting, high contrast between line and surface, flat surface
 
-**Challenge Ideas:**
-- Add a counter to track how many obstacles were detected
-- Make the buggy reverse when obstacle detected, then resume
-- Add sound effects when obstacles are detected
-- Try different Kitronik mat challenges!
+**Understanding the logic:**
+- Both sensors on line → Go straight (both motors at fastSpeed)
+- Left sensor on line → Turn left (left motor at slowSpeed, right at fastSpeed)
+- Right sensor on line → Turn right (right motor at slowSpeed, left at fastSpeed)
+- Neither sensor on line → Stop (lost the line)
+
+**Why does this work?**
+When one motor runs slower than the other, the buggy naturally curves toward the slower side while still moving forward. This creates smooth line following instead of jerky stop-and-spin movements!
+
+**Ready for challenges?**
+Now try your line following on:
+- Curved lines
+- Sharp corners
+- The Kitronik challenge mats
+- Your own custom line patterns!
+
+The same code works for all line following challenges - just let your buggy do the work!
+
+**Advanced Tip: Handling Very Tight Corners**
+If your buggy struggles with very sharp corners on the Kitronik mats, you can make turns more aggressive by using negative speeds:
+- Instead of `slowSpeed = 15`, try `slowSpeed = -10`
+- This makes one motor go backward while the other goes forward, creating a tighter turn
+- Warning: This can make the buggy "hunt" more on gentle curves, so only use if needed for your specific track!
