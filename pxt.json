@@ -12,7 +12,8 @@
         "main.ts",
         "README.md",
         "motor-test.md",
-        "auto-square.md"
+        "auto-square.md",
+        "nav-challenge.md"
     ],
     "testFiles": [
         "test.ts"
