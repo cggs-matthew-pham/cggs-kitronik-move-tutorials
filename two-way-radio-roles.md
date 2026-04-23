@@ -272,17 +272,64 @@ input.onButtonPressed(Button.AB, function () {
 
 Square = REMOTE, Heart = BOT.
 
-## Step 8: Add Ultrasonic Triggers to the Forever Loop
-The bot should send status **automatically** based on what the ultrasonic sensor sees. This logic only runs when `role == "BOT"`.
+## Step 8: Set the Ultrasonic Unit
+Before we use the ultrasonic sensor, we need to tell it what units to measure in. Add ``||Kitronik_Move_Motor:measure distances in cm||`` to your ``||basic:on start||`` block.
 
-At the **top** of your ``||basic:forever||`` loop (before the existing if-else chain), add:
+This only needs to happen once, at startup. From now on, `measure` will return distances in centimetres.
+```blocks
+Kitronik_Move_Motor.measureDistancesIn(Kitronik_Move_Motor.DistanceUnit.Cm)
+```
 
-- An if-check that runs only when `role == "BOT"`
-- Inside: read the ultrasonic distance
-- If distance is less than **5 cm**: send ARRIVED on `channel_status`
-- Else if distance is less than **15 cm** AND `currentAction == FOLLOW`: send HELP on `channel_status`
+## Step 9: Wrap the Forever Loop Content in a Role Check
+The bot's sensor-watching logic needs to happen *only when the device is the BOT*. The REMOTE doesn't need to check its ultrasonic - it's in someone's hand, not pointed at anything meaningful.
 
-Very close = reached target. Obstacle during line-follow = need help.
+Open your ``||basic:forever||`` loop. We'll add an outer `if (role == "BOT")` wrapper that we'll fill in over the next few steps.
+
+Right now, don't move any of the existing state-dispatch logic. Just add the wrapper *above* the existing code - we'll put the status-sending inside it.
+```blocks
+let role = ""
+basic.forever(function () {
+    if (role == "BOT") {
+
+    }
+    // All your existing state-dispatch logic stays here, unchanged
+})
+```
+
+## Step 10: Add the ARRIVED Trigger
+Inside the `if (role == "BOT")` block, add your first status trigger.
+
+Add an ``||logic:if then||`` block. The condition checks whether the ultrasonic distance is less than **5** - i.e. something is very close in front of the bot.
+
+Inside the if, ``||radio:radio send value||`` with ``||variables:channel_status||`` and ``||variables:ARRIVED||``. Then add ``||basic:pause||`` for **1000** ms to stop the bot spamming the same message every tick.
+```blocks
+let role = ""
+let channel_status = ""
+let ARRIVED = 0
+basic.forever(function () {
+    if (role == "BOT") {
+        if (Kitronik_Move_Motor.measure() < 5) {
+            radio.sendValue(channel_status, ARRIVED)
+            basic.pause(1000)
+        }
+    }
+    // existing state-dispatch logic stays here
+})
+```
+
+**Quick test at this point**: download and set the bot role. Put your hand or a book in front of the bot - the remote should flash a tick icon.
+
+## Step 11: Add the HELP Trigger
+Now for the second status trigger - HELP, when an obstacle shows up during line-following.
+
+Add an ``||logic:else if||`` branch to the existing if. The condition has two parts joined by **and**:
+
+1. Ultrasonic distance is less than **15**
+2. `currentAction` equals `FOLLOW`
+
+Both need to be true. The bot only sends HELP when it's following a line *and* something blocks the path.
+
+Inside, ``||radio:radio send value||`` with ``||variables:channel_status||`` and ``||variables:HELP||``. Then another ``||basic:pause||`` of **1000** ms.
 ```blocks
 let role = ""
 let channel_status = ""
@@ -300,26 +347,18 @@ basic.forever(function () {
             basic.pause(1000)
         }
     }
-    // ... existing state-dispatch logic continues below ...
+    // existing state-dispatch logic stays here
 })
 ```
 
-The `basic.pause(1000)` after sending prevents the bot from spamming the same status message every tick.
+Notice the order matters: ARRIVED (< 5) is checked *first*. If the bot is very close to something, that's ARRIVED, not HELP. The `else if` means HELP only fires when ARRIVED didn't.
 
-Important: keep all your existing state-dispatch logic (GO, FOLLOW, SPIN_LEFT, etc.) **after** the status-sending block. They run every tick as normal.
-
-## Step 9: Set the Ultrasonic Unit
-Add ``||Kitronik_Move_Motor:measure distances in cm||`` to your ``||basic:on start||`` block. This makes sure `measure` returns centimetres, which the thresholds in Step 8 depend on.
-```blocks
-Kitronik_Move_Motor.measureDistancesIn(Kitronik_Move_Motor.DistanceUnit.Cm)
-```
-
-## Step 10: Download to Both Micro:bits
+## Step 12: Download to Both Micro:bits
 Download to both. Both start as REMOTE (Small Square icon).
 
 On the one that plugs into the Move, press **A+B** once - it switches to BOT mode and shows a heart icon.
 
-## Step 11: Test the Full Two-Way Flow
+## Step 13: Test the Full Two-Way Flow
 Set up a line for the Move. Place an obstacle in the middle of the line (a book, box, anything taller than 5cm).
 
 - Press the menu to FOLLOW on the remote, press B to send
