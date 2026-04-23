@@ -14,7 +14,8 @@
         "motor-test.md",
         "auto-square.md",
         "nav-challenge.md",
-        "mat-challenge.md"
+        "mat-challenge.md",
+        "radio-1-basics.md"
     ],
     "testFiles": [
         "test.ts"
