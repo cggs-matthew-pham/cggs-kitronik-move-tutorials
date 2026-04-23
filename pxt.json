@@ -17,7 +17,11 @@
         "mat-challenge.md",
         "radio-1-basics.md",
         "radio-remote-control.md",
-        "radio-channels.md"
+        "radio-channels.md",
+        "state-and-forever-loop.md",
+        "adapting-line-following.md",
+        "cycle-and-select.md",
+        "two-way-radio-roles.md"
     ],
     "testFiles": [
         "test.ts"
