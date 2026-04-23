@@ -15,7 +15,9 @@
         "auto-square.md",
         "nav-challenge.md",
         "mat-challenge.md",
-        "radio-1-basics.md"
+        "radio-1-basics.md",
+        "radio-remote-control.md",
+        "radio-channels.md"
     ],
     "testFiles": [
         "test.ts"
