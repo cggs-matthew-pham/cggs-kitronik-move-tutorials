@@ -52,10 +52,17 @@ Take a moment to check the starter code. You should see:
 
 This is exactly where you finished the previous tutorial. We'll now upgrade it to use channels.
 
-## Step 2: Create a Channel Variable
+## Step 2: Check Your Radio Group
+The template code uses `radio set group` set to **1**. If you picked a different group in the previous tutorial, update this number to match what you used.
+
+Both your remote **and** your Move need to use exactly the same group number. Channels (which we're about to add) filter messages *within* a group - they don't replace the group match.
+
+If you and your partner both used group 1, leave it as 1.
+
+## Step 3: Create a Channel Variable
 From ``||variables:Variables||``, click "Make a Variable" and create **channel**. Drag ``||variables:set channel to||`` into ``||basic:on start||``.
 
-This block will hold a piece of text - your pair's unique code name. Instead of the default number, click the value slot and change it to a **string** value (look for the string version).
+This block will hold a piece of text - your pair's unique code name. Click the value slot and change it to a **string** value (look for the string version from the Text category).
 
 Pick a unique code name for your pair - anything you like, as long as it's not boring. "Roger", "TacoBot", "Jellyfish" - whatever. **Both your remote and your Move need to use exactly the same name**, including capital letters.
 
@@ -73,7 +80,7 @@ speed = 40
 channel = "Roger"
 ```
 
-## Step 3: Change Button A to Send with the Channel
+## Step 4: Change Button A to Send with the Channel
 You're going to replace ``||radio:radio send number||`` with ``||radio:radio send value||``. The new block sends two things at once: a **name** (your channel) and a **number** (the command).
 
 From ``||radio:Radio||``, find ``||radio:radio send value||``. Drag it into your ``||input:on button A pressed||`` block, replacing the ``||radio:radio send number||``.
@@ -87,7 +94,7 @@ input.onButtonPressed(Button.A, function () {
 })
 ```
 
-## Step 4: Change Button B to Send with the Channel
+## Step 5: Change Button B to Send with the Channel
 Do the same thing for button B - replace ``||radio:radio send number||`` with ``||radio:radio send value||`` using ``||variables:channel||`` and ``||variables:STOP||``.
 ```blocks
 let channel = ""
@@ -97,12 +104,12 @@ input.onButtonPressed(Button.B, function () {
 })
 ```
 
-## Step 5: Delete the Old Receive Block
+## Step 6: Delete the Old Receive Block
 Right-click the existing ``||radio:on radio received receivedNumber||`` block and select **Delete Block**.
 
 Don't worry - we're replacing it with a new version that handles the channel check.
 
-## Step 6: Add a New Receive Block for Named Messages
+## Step 7: Add a New Receive Block for Named Messages
 From ``||radio:Radio||``, drag ``||radio:on radio received name value||`` into the workspace. This is the block that receives **both** the name and the value.
 ```blocks
 radio.onReceivedValue(function (name, value) {
@@ -110,7 +117,7 @@ radio.onReceivedValue(function (name, value) {
 })
 ```
 
-## Step 7: Check if the Name Matches Your Channel
+## Step 8: Check if the Name Matches Your Channel
 Inside ``||radio:on radio received name value||``, add an ``||logic:if then||`` block from ``||logic:Logic||``.
 
 The condition checks whether the received ``||variables:name||`` equals your ``||variables:channel||``. If it does, this message is for you. If not, ignore it.
@@ -125,7 +132,7 @@ radio.onReceivedValue(function (name, value) {
 })
 ```
 
-## Step 8: Add the Dispatcher Inside the Channel Check
+## Step 9: Add the Dispatcher Inside the Channel Check
 Now put the dispatcher logic from Tutorial 1 **inside** the if block. If the name matches, run the if/else on the value.
 
 Add an ``||logic:if then else||`` block inside the outer if. Check if ``||variables:value||`` equals ``||variables:GO||``. Inside the inner **if**, add ``||functions:call driveForward||``. In the inner **else**, add ``||functions:call stopBot||``.
@@ -145,15 +152,15 @@ radio.onReceivedValue(function (name, value) {
 
 Your bot now only acts on messages with **your** channel name. Messages from other pairs still arrive, but the first `if` check filters them out.
 
-## Step 9: Test in the Simulator
+## Step 10: Test in the Simulator
 With the simulator's two micro:bits, click button **A** on one. The other should receive the message with name "Roger" and value GO, and call `driveForward`.
 
 Both simulated devices are running the same code with the same channel, so messages flow between them. That's the test passing.
 
-## Step 10: Download to Both Micro:bits
+## Step 11: Download to Both Micro:bits
 Click **Download** and copy onto both your micro:bits - same code on both. Test with your Move: button A = drive forward, button B = stop. Should still work exactly as before.
 
-## Step 11: Test with Another Pair (Optional, Recommended)
+## Step 12: Test with Another Pair (Optional, Recommended)
 Now the real test. Ask another pair in the classroom to do the following:
 
 1. Open their Radio Remote Control project
@@ -172,8 +179,8 @@ Your pair is now isolated from other pairs' messages. This is the same idea real
 
 **Tips for your project:**
 - **Pick a distinctive name**. "pair1", "pair2" etc are fine but boring; something unique is less likely to clash.
-- **The radio group still matters too**. If no messages flow at all, check both devices are on radio group 1 first, then check channels.
+- **The radio group still matters too**. If no messages flow at all, check both devices are on the same radio group first, then check channels.
 
 **A note on channels vs groups**: radio groups are a limit set by the radio hardware - you can only listen to one group at a time. Channels are a *filter you write in code* - you can listen to all messages on your group and decide in software which ones are for you. That's what makes channels more flexible.
 
-**Next step**: time to do something more interesting than just drive forward. The **Adapting Line Following** tutorial brings the Kitronik line-following code into your dispatcher as a new `followLine` function you can trigger over radio.
+**Next step**: the **State and the Forever Loop** tutorial teaches a pattern that makes your dispatcher much more flexible. It's needed before you can add continuous behaviours like line following.
