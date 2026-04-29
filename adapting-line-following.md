@@ -67,8 +67,10 @@ basic.forever(function () {
         }
     } else if (currentAction == GO) {
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+        basic.showArrow(ArrowNames.North)
     } else {
         Kitronik_Move_Motor.stop()
+        basic.showIcon(IconNames.SmallSquare)
     }
 })
 ```
