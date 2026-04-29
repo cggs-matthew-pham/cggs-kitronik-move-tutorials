@@ -12,10 +12,12 @@ speed = 40
 
 function driveForward () {
     Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+    basic.showArrow(ArrowNames.North)
 }
 
 function stopBot () {
     Kitronik_Move_Motor.stop()
+    basic.showIcon(IconNames.SmallSquare)
 }
 
 input.onButtonPressed(Button.A, function () {
