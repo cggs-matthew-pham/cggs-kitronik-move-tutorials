@@ -14,10 +14,12 @@ channel = "Roger"
 
 function driveForward () {
     Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+    basic.showArrow(ArrowNames.North)
 }
 
 function stopBot () {
     Kitronik_Move_Motor.stop()
+    basic.showIcon(IconNames.SmallSquare)
 }
 
 input.onButtonPressed(Button.A, function () {
@@ -83,11 +85,13 @@ currentAction = STOP
 ```
 
 ## Step 4: Change driveForward to Set the State
-Open your ``||functions:driveForward||`` function. Right now it directly calls the move block. We're going to replace that.
+Open your ``||functions:driveForward||`` function. Right now it directly calls the move block and shows an arrow. We're going to replace both.
 
-Delete the ``||Kitronik_Move_Motor:move Forward||`` block inside ``||functions:driveForward||``.
+Delete everything inside ``||functions:driveForward||``.
 
 Drag in ``||variables:set currentAction to||`` from ``||variables:Variables||`` and set its value to ``||variables:GO||``.
+
+The display will move into the forever loop in a moment — the function just sets state now.
 ```blocks
 let GO = 0
 let currentAction = 0
@@ -99,7 +103,7 @@ function driveForward () {
 The function no longer moves the bot directly. It just records "I want to be going forward." Something else will do the actual moving.
 
 ## Step 5: Change stopBot to Set the State
-Do the same for ``||functions:stopBot||``. Delete the ``||Kitronik_Move_Motor:stop||`` block, and replace it with ``||variables:set currentAction to STOP||``.
+Do the same for ``||functions:stopBot||``. Delete everything inside it, and replace with ``||variables:set currentAction to STOP||``.
 ```blocks
 let STOP = 0
 let currentAction = 0
@@ -121,7 +125,9 @@ basic.forever(function () {
 ## Step 7: Decide What to Do Based on currentAction
 Inside the forever loop, add an ``||logic:if then else||`` block.
 
-In the condition, check if ``||variables:currentAction||`` equals ``||variables:GO||``. In the **if**, drag in ``||Kitronik_Move_Motor:move Forward||`` and set the speed to ``||variables:speed||``. In the **else**, drag in ``||Kitronik_Move_Motor:stop||``.
+In the condition, check if ``||variables:currentAction||`` equals ``||variables:GO||``. In the **if**, drag in ``||Kitronik_Move_Motor:move Forward||`` and set the speed to ``||variables:speed||``, then add ``||basic:show arrow North||``. In the **else**, drag in ``||Kitronik_Move_Motor:stop||`` and ``||basic:show icon Small Square||``.
+
+The display now lives in the forever loop where it belongs — it reflects what the bot is actually doing each tick.
 ```blocks
 let speed = 0
 let GO = 0
@@ -129,8 +135,10 @@ let currentAction = 0
 basic.forever(function () {
     if (currentAction == GO) {
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+        basic.showArrow(ArrowNames.North)
     } else {
         Kitronik_Move_Motor.stop()
+        basic.showIcon(IconNames.SmallSquare)
     }
 })
 ```
