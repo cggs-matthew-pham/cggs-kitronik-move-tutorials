@@ -5,12 +5,7 @@ Build a radio-controlled Move Motor! You'll write **one program** and flash it o
 
 You'll need **two** micro:bits in total.
 
-## Step 1: About This Project
-This tutorial has the Kitronik :MOVE Motor extension already loaded - you'll see its blocks in the toolbox under **Kitronik :MOVE Motor**. You don't need to add it yourself.
-
-**In your own projects later**, you'd click **Extensions** in the toolbox and search for "move motor" to add it. You can't add extensions from inside a tutorial, which is why we've set it up for you here.
-
-## Step 2: Set the Radio Group
+## Step 1: Set the Radio Group
 From ``||radio:Radio||``, drag ``||radio:radio set group||`` into ``||basic:on start||``. Set it to **1**.
 
 Every micro:bit on the same radio group hears each other's messages. In a classroom, multiple pairs on group 1 will hear each other - the **Radio Channels** tutorial next will show you how to fix that.
@@ -18,14 +13,14 @@ Every micro:bit on the same radio group hears each other's messages. In a classr
 radio.setGroup(1)
 ```
 
-## Step 3: Show a Ready Icon
+## Step 2: Show a Ready Icon
 From ``||basic:Basic||``, drag ``||basic:show icon||`` after the radio group block. Pick the **Small Square** icon so you know the program is running.
 ```blocks
 radio.setGroup(1)
 basic.showIcon(IconNames.SmallSquare)
 ```
 
-## Step 4: Create Named Commands (GO and STOP)
+## Step 3: Create Named Commands (GO and STOP)
 We're going to send **numbers** over radio - but numbers on their own are hard to read. Is 1 "forward" or "stop"? Much clearer if we use variables to give numbers a meaningful name.
 
 From ``||variables:Variables||``, click "Make a Variable" and create **GO**. Then do it again and create **STOP**.
@@ -43,7 +38,7 @@ GO = 1
 STOP = 0
 ```
 
-## Step 5: Create a Speed Variable
+## Step 4: Create a Speed Variable
 From ``||variables:Variables||``, create a variable called **speed**. Drag ``||variables:set speed to 0||`` into ``||basic:on start||`` and set it to **40**.
 
 Putting the speed in a variable means you can tweak it later without hunting through your code.
@@ -58,7 +53,7 @@ STOP = 0
 speed = 40
 ```
 
-## Step 6: Send GO on Button A
+## Step 5: Send GO on Button A
 From ``||input:Input||``, drag ``||input:on button A pressed||`` into the workspace. From ``||radio:Radio||``, drag ``||radio:radio send number||`` inside it. Instead of typing a number, drag the ``||variables:GO||`` variable from ``||variables:Variables||`` into the send block.
 
 This sends the "GO" message to every micro:bit on the same radio group - including ourselves. We'll deal with the receiving end next.
@@ -74,7 +69,7 @@ input.onButtonPressed(Button.A, function () {
 })
 ```
 
-## Step 7: Send STOP on Button B
+## Step 6: Send STOP on Button B
 Drag another ``||input:on button B pressed||`` into the workspace. Inside it, ``||radio:radio send number||`` with the ``||variables:STOP||`` variable.
 ```blocks
 let STOP = 0
@@ -93,7 +88,7 @@ input.onButtonPressed(Button.B, function () {
 
 Your code now reads "send GO" and "send STOP" - much clearer than sending "1" and "0".
 
-## Step 8: Create a driveForward Function
+## Step 7: Create a driveForward Function
 Now let's build the receiving end. We'll put each action the bot can do into its own **function**. This is a pattern you'll reuse across every tutorial - every time you want the bot to do something new, you'll add a new function.
 
 From ``||functions:Functions||`` (under Advanced), click **Make a Function**. Name it **driveForward** and click Done.
@@ -103,26 +98,30 @@ function driveForward () {
 }
 ```
 
-## Step 9: Add the Forward Movement
+## Step 8: Add the Forward Movement
 Inside ``||functions:driveForward||``, drag ``||Kitronik_Move_Motor:move Forward at speed||`` from the Kitronik category. Drag the ``||variables:speed||`` variable into the speed slot.
+
+Then add ``||basic:show arrow||`` from ``||basic:Basic||`` and pick **North** (up arrow). This gives you a visual confirmation on the display when GO is received.
 ```blocks
 let speed = 0
 function driveForward () {
     Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+    basic.showArrow(ArrowNames.North)
 }
 ```
 
-## Step 10: Create a stopBot Function
+## Step 9: Create a stopBot Function
 From ``||functions:Functions||``, click **Make a Function** again. Name it **stopBot** and click Done.
 
-Inside, drag ``||Kitronik_Move_Motor:stop||`` from the Kitronik category.
+Inside, drag ``||Kitronik_Move_Motor:stop||`` from the Kitronik category. Then add ``||basic:show icon||`` and pick **Small Square** — so the display shows a square when STOP is received.
 ```blocks
 function stopBot () {
     Kitronik_Move_Motor.stop()
+    basic.showIcon(IconNames.SmallSquare)
 }
 ```
 
-## Step 11: Handle Received Numbers
+## Step 10: Handle Received Numbers
 From ``||radio:Radio||``, drag ``||radio:on radio received receivedNumber||`` into the workspace. This block runs every time the micro:bit receives a number from another micro:bit on the same radio group.
 ```blocks
 radio.onReceivedNumber(function (receivedNumber) {
@@ -130,7 +129,7 @@ radio.onReceivedNumber(function (receivedNumber) {
 })
 ```
 
-## Step 12: Dispatch to the Right Function
+## Step 11: Dispatch to the Right Function
 Inside ``||radio:on radio received||``, add an ``||logic:if then else||`` block.
 
 In the **if** condition, check whether ``||variables:receivedNumber||`` equals ``||variables:GO||``. Inside the **if**, add ``||functions:call driveForward||``. In the **else**, add ``||functions:call stopBot||``.
@@ -141,9 +140,11 @@ let speed = 0
 let GO = 0
 function driveForward () {
     Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
+    basic.showArrow(ArrowNames.North)
 }
 function stopBot () {
     Kitronik_Move_Motor.stop()
+    basic.showIcon(IconNames.SmallSquare)
 }
 radio.onReceivedNumber(function (receivedNumber) {
     if (receivedNumber == GO) {
@@ -156,7 +157,7 @@ radio.onReceivedNumber(function (receivedNumber) {
 
 Notice how your code now reads "if receivedNumber equals GO" instead of "if receivedNumber equals 1". That's why the named constants matter.
 
-## Step 13: Test in the Simulator
+## Step 12: Test in the Simulator
 Look at the simulator on the left of your screen. As soon as you use radio blocks, a **second simulator micro:bit** appears. Both run the same code.
 
 Click button **A** on either simulated micro:bit - you should see them both react (the receiving one runs `driveForward`, though without a real Move attached it won't show anything visible).
@@ -165,14 +166,14 @@ Click button **B** - they receive the STOP message.
 
 The simulator is useful for checking the radio messages are flowing correctly, even though it can't show real Move motor movement.
 
-## Step 14: Download to Both Micro:bits
+## Step 13: Download to Both Micro:bits
 Click **Download** and copy the file onto **both** your micro:bits. Same code on both.
 
 Label one "REMOTE" (this is the one you'll hold) and the other "MOVE" (this one plugs into your Move Motor).
 
 Plug the MOVE micro:bit into the edge connector on the Move Motor and switch the Move on.
 
-## Step 15: Test It!
+## Step 14: Test It!
 Turn on both micro:bits. Place the Move on the floor or a desk with plenty of space.
 
 Press button **A** on the REMOTE - the Move should drive forward.
