@@ -1,159 +1,168 @@
-# Kitronik :MOVE Motor - Adapting Line Following
-
 ```template
-let sensorDifference = 0
-let rightSensor = 0
 let leftSensor = 0
-let FOLLOW = 0
-let currentAction = 0
-let channel = ""
-let speed = 0
-let STOP = 0
-let GO = 0
-radio.setGroup(1)
-basic.showIcon(IconNames.SmallSquare)
-GO = 1
-STOP = 0
-FOLLOW = 2
-speed = 40
-channel = "Roger"
-currentAction = STOP
-
-function driveForward () {
-    currentAction = GO
-}
-
-function stopBot () {
-    currentAction = STOP
-}
-
-function followLine () {
-    currentAction = FOLLOW
-}
-
-input.onButtonPressed(Button.A, function () {
-    radio.sendValue(channel, GO)
-})
-
-input.onButtonPressed(Button.B, function () {
-    radio.sendValue(channel, STOP)
-})
-
-radio.onReceivedValue(function (name, value) {
-    if (name == channel) {
-        if (value == GO) {
-            driveForward()
-        } else if (value == FOLLOW) {
-            followLine()
-        } else {
-            stopBot()
-        }
-    }
-})
-
+let rightSensor = 0
+let sensorDifference = 0
 basic.forever(function () {
-    if (currentAction == FOLLOW) {
-        leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
-        rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
-        sensorDifference = Math.abs(leftSensor - rightSensor)
-        if (sensorDifference > 10) {
-            if (leftSensor > rightSensor) {
-                Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Right, 20)
-            } else {
-                Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 20)
-            }
-        } else {
-            Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
-        }
-    } else if (currentAction == GO) {
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, speed)
-        basic.showArrow(ArrowNames.North)
+    leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
+    rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
+    sensorDifference = leftSensor - rightSensor
+    if (sensorDifference > 10) {
+        Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorRight)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, 30)
+    } else if (sensorDifference < -10) {
+        Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorLeft)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, 30)
     } else {
-        Kitronik_Move_Motor.stop()
-        basic.showIcon(IconNames.SmallSquare)
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 30)
     }
 })
 ```
 
 ## Introduction @showdialog
-You already know line following from Kitronik's line-following tutorial. This tutorial shows you how to plug that knowledge into the **state pattern** from Tutorial 3 - so line-following becomes just another radio-triggered behaviour.
+You already have a working line-follower. This tutorial shows you how to refactor it using the **state pattern** from Tutorial 3, so line-following becomes just another radio-triggered behaviour alongside GO and STOP.
 
-The template code has it all wired up already. Your job is to understand it, add the radio trigger, test it, and move on.
+You'll start with the bare line-following logic and end up with a full multi-behaviour bot, controlled by radio.
 
-## Step 1: Check Your Setup
-The template includes:
+## Step 1: Understand the Starting Code
+The template is a working line-follower. Each tick of the forever loop:
 
-- Everything from the previous tutorials (radio, channel, GO/STOP, state + forever loop)
-- A new state constant **FOLLOW = 2**
-- A new function **followLine** that sets `currentAction = FOLLOW`
-- A new `else if (value == FOLLOW)` branch in the dispatcher that calls `followLine()`
-- A new `if (currentAction == FOLLOW)` branch at the top of the forever loop that runs the line-following algorithm
+1. Reads both light sensors
+2. Calculates `sensorDifference = leftSensor - rightSensor` (signed — which side is bigger matters)
+3. If the difference is **more than 10**, the bot has drifted right — turn left by powering only the left motor
+4. If the difference is **less than -10**, the bot has drifted left — turn right by powering only the right motor
+5. Otherwise both sensors roughly agree — drive straight
 
-Make sure `channel` matches yours.
+Get familiar with this logic before we restructure it.
 
-## Step 2: Understand How It Fits Together
-The line-following logic lives inside the forever loop, in the FOLLOW branch. Every tick:
+## Step 2: Extract the Logic into Functions
+The forever loop currently has three branches. We're going to pull each one into a named function so the loop itself just decides *what to do*, not *how to do it*.
 
-1. Read both line sensors
-2. Calculate the difference between them (using the **absolute value** so we ignore whether left is bigger or right is bigger at first)
-3. If the difference is **more than 10**, the sensors disagree: one is on the line, one isn't. Spin toward the line.
-4. If the difference is **10 or less**, both sensors agree: we're tracking straight. Drive forward.
+Create three functions: **followLine**, **goForward**, and **stopBot**.
 
-This is exactly the algorithm from Kitronik's line-following tutorial - it's just now wrapped in an if-check that only runs when `currentAction == FOLLOW`. That's the key: line-following only happens when the state says it should.
+Move the line-following logic into `followLine`:
 
-## Step 3: Add the Radio Trigger (Button A+B)
-Right now the remote sends GO on button A and STOP on button B, but nothing sends FOLLOW. Let's fix that.
-
-From ``||input:Input||``, drag ``||input:on button A+B pressed||`` into the workspace. Inside it, ``||radio:radio send value||`` with ``||variables:channel||`` and ``||variables:FOLLOW||``.
 ```blocks
-let channel = ""
-let FOLLOW = 0
-input.onButtonPressed(Button.AB, function () {
-    radio.sendValue(channel, FOLLOW)
+function followLine () {
+    leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
+    rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
+    sensorDifference = leftSensor - rightSensor
+    if (sensorDifference > 10) {
+        Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorRight)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Forward, 30)
+    } else if (sensorDifference < -10) {
+        Kitronik_Move_Motor.motorOff(Kitronik_Move_Motor.Motors.MotorLeft)
+        Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Forward, 30)
+    } else {
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 30)
+    }
+}
+```
+
+Then add the other two:
+
+```blocks
+function goForward () {
+    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 30)
+}
+function stopBot () {
+    Kitronik_Move_Motor.stop()
+}
+```
+
+## Step 3: Add the State Variables and Radio Setup
+Now add the infrastructure from Tutorial 3: state constants, a `currentAction` variable, radio group, and channel.
+
+```blocks
+let STOP = 0
+let GO = 1
+let FOLLOW = 2
+let channel = "Roger"
+let currentAction = FOLLOW
+radio.setGroup(1)
+basic.showIcon(IconNames.SmallSquare)
+```
+
+Make sure `channel` matches the value you're using on the remote.
+
+## Step 4: Rewrite the Forever Loop as a Dispatcher
+Replace the old forever loop with one that just reads `currentAction` and calls the right function:
+
+```blocks
+basic.forever(function () {
+    if (currentAction == FOLLOW) {
+        followLine()
+    } else if (currentAction == GO) {
+        goForward()
+    } else {
+        stopBot()
+    }
 })
 ```
 
-Now pressing A+B on the remote sends FOLLOW, which triggers `followLine()`, which sets `currentAction = FOLLOW`, which the forever loop reads and starts running the line-follow logic.
+The logic is gone from the loop — it's now only in the functions. The loop just dispatches.
 
-## Step 4: Test in the Simulator
-The simulator can't actually follow a line (no physical sensors), but you can verify the radio path works:
+## Step 5: Add the Radio Receiver
+Add a ``||radio:on received value||`` handler. When the correct channel name arrives, update `currentAction` and show an icon so you can see the state:
 
-- Press A on one simulator → both show GO is received
-- Press A+B on one → the other's dispatcher receives FOLLOW
+```blocks
+radio.onReceivedValue(function (name, value) {
+    if (name == channel) {
+        if (value == FOLLOW) {
+            currentAction = FOLLOW
+            basic.showIcon(IconNames.Diamond)
+        } else if (value == GO) {
+            currentAction = GO
+            basic.showArrow(ArrowNames.North)
+        } else {
+            currentAction = STOP
+            basic.showIcon(IconNames.SmallSquare)
+        }
+    }
+})
+```
 
-If the radio path works, the logic on real hardware will work too.
+## Step 6: Set Up the Remote Buttons
+On the **remote micro:bit**, map the three button combinations:
 
-## Step 5: Download and Test on the Move
-Download to both micro:bits. Set your Move on a line (black tape on white paper works well).
+- **A** → send GO
+- **B** → send FOLLOW
+- **A+B** → send STOP
 
-- Press **A** on the remote: Move drives straight forward, not following
-- Press **A+B**: Move starts following the line
-- Press **B**: Move stops
+```blocks
+input.onButtonPressed(Button.A, function () {
+    radio.sendValue(channel, GO)
+})
+input.onButtonPressed(Button.B, function () {
+    radio.sendValue(channel, FOLLOW)
+})
+input.onButtonPressed(Button.AB, function () {
+    radio.sendValue(channel, STOP)
+})
+```
 
-## Step 6: Tune for Your Setup
-Line following depends on the surface, the line colour, and the lighting. The template uses:
+Note the layout: A+B is now STOP, not B alone. Make sure both micro:bits have the same `channel` and `radio.setGroup` value.
 
-- **Tolerance of 10** for "difference is significant"
-- **Spin speed of 20** for turning onto the line
-- **Forward speed** = your `speed` variable (default 40)
+## Step 7: Download and Test
+Download to both micro:bits.
 
-If the bot wobbles too much, try a tolerance of 15 or 20 (less twitchy). If it misses turns, try 5 or 8 (more sensitive). If it spins too fast and overshoots, drop the spin speed to 15.
+- Press **A** on the remote: Move drives straight forward
+- Press **B**: Move starts following the line
+- Press **A+B**: Move stops
 
-These are the numbers in your forever loop's FOLLOW branch. Tweak them until the bot tracks your line smoothly.
+If the bot overshoots corners, lower the motor speed from 30. If it loses the line easily, check your surface — good contrast between line and background makes a big difference.
 
 ## Complete! @showdialog
-You've added line following as a new state in your dispatcher. Three behaviours now, all triggered by radio, all using the same pattern.
+You've refactored a working line-follower into the state pattern. The forever loop doesn't contain any driving logic — it just reads a variable and calls a function.
 
-**What matters here isn't the line-follow code itself - it's the pattern.** Any continuous behaviour (patrolling, obstacle-avoiding, searching) would plug in the same way:
+**This is the key insight:** any continuous behaviour plugs in the same way:
+1. Write a function containing the behaviour
+2. Add a state constant
+3. Add a branch in the dispatcher
+4. Add a radio trigger
 
-1. Create a new state constant
-2. Create a function that sets `currentAction` to the new state
-3. Add a dispatcher branch that calls the function
-4. Add a forever-loop branch with the actual logic
+**What to try next:**
+- Add a **REVERSE** state for when the bot gets stuck
+- Use ZIP LEDs to visualise the current state (green = FOLLOW, amber = GO, red = STOP)
+- Think about what happens if the bot loses the line completely — how would you detect that and switch state automatically?
 
-**Tips for your project:**
-- **Combine commands**: press A+B to follow, then B to stop at a specific point
-- **Add a REVERSE state**: useful if the bot gets stuck
-- **Use ZIP LEDs to show state**: green during FOLLOW, amber during GO, red during STOP - makes debugging easier
-
-**Next step**: your remote has 3 commands on 3 button combos. What if you want 6 or 8? The **Cycle-and-Select Controller** tutorial shows how to build a remote that can send lots of commands using just 2 buttons.
+**Next tutorial**: the remote currently has 3 commands across 3 button combos. The **Cycle-and-Select Controller** tutorial shows how to send many more commands using just 2 buttons.
