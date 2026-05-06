@@ -160,19 +160,4 @@ You've refactored a working line-follower into the state pattern. The forever lo
 3. Add a branch in the dispatcher
 4. Add a radio trigger
 
-**Challenge: add obstacle avoidance as a third state**
-
-You may have also built a standalone obstacle avoider in a previous tutorial. Its forever loop looks like this — drive forward until something is closer than 10 cm, then stop, reverse, and spin away:
-
-Can you add it to this project as a new state?
-
-Here's what you'd need to do:
-- Create a function called `avoidObstacle()` containing that logic
-- Add a new state constant `AVOID = 3`
-- Add an `else if (currentAction == AVOID)` branch in the forever loop that calls `avoidObstacle()`
-- Add an `else if (value == AVOID)` branch in the radio receiver that sets `currentAction = AVOID`
-- Add a button on the remote that sends AVOID
-
-If you get that working, the bot can switch between three completely different behaviours — all triggered by radio, all using the same pattern.
-
 **Next tutorial**: the remote currently has 3 commands across 3 button combos. The **Cycle-and-Select Controller** tutorial shows how to send many more commands using just 2 buttons.re commands using just 2 buttons.
