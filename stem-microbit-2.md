@@ -1,96 +1,128 @@
 # Your Robot's Dance Routine
 
 ```template
-Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 50)
-basic.pause(1000)
-Kitronik_Move_Motor.stop()
-basic.pause(500)
-Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
-basic.pause(1000)
-Kitronik_Move_Motor.stop()
-basic.pause(500)
-Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 50)
-basic.pause(500)
-Kitronik_Move_Motor.stop()
+Kitronik_Move_Motor.turnRadius(Kitronik_Move_Motor.TurnRadii.Tight)
+basic.showIcon(IconNames.SmallSquare)
 ```
 
 ## Introduction @showdialog
-Your robot can already move. But right now it starts the moment it's switched on — not ideal for a performance!
+Your robot already knows how to move. Now it's going to **perform**.
 
-In this tutorial you'll move your sequence into a **button press**, so the robot waits on stage until you tell it to go. Then you'll extend the sequence to make it more interesting.
+In this tutorial you'll choreograph a dance routine using arcs — curved moves that look much more interesting than straight lines. You'll use **functions** to keep your code tidy, and **two buttons** to control two different parts of the routine.
 
-## Step 1: Move Your Sequence to Button A
-Right now your moves are in ``||basic:on start||`` — they run immediately when the micro:bit turns on.
+## Step 1: Set the Turn Radius
+Your template already has ``||Kitronik_Move_Motor:set turn radius Tight||`` in ``||basic:on start||``. This controls how sharply the robot curves — **Tight** means a small arc, **Wide** means a big sweeping curve.
 
-We want them to run when you press **button A** instead.
+Leave it on **Tight** for now. You can change it later and see what happens to the routine.
 
-From ``||input:Input||``, drag ``||input:on button A pressed||`` into the workspace.
+## Step 2: Create a forwardArc Function
+From ``||functions:Functions||`` (under Advanced), click **Make a Function**. Name it **forwardArc** and click Done.
 
-Now move all your existing blocks from ``||basic:on start||`` into the new ``||input:on button A pressed||`` block.
+Inside, add:
+- ``||Kitronik_Move_Motor:move Right at speed 50||`` → ``||basic:pause 800 ms||`` → ``||Kitronik_Move_Motor:stop||`` → ``||basic:pause 300 ms||``
+- ``||Kitronik_Move_Motor:move Left at speed 50||`` → ``||basic:pause 800 ms||`` → ``||Kitronik_Move_Motor:stop||`` → ``||basic:pause 300 ms||``
 
 ```blocks
-input.onButtonPressed(Button.A, function () {
-    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 50)
-    basic.pause(1000)
+function forwardArc () {
+    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Right, 50)
+    basic.pause(800)
     Kitronik_Move_Motor.stop()
-    basic.pause(500)
-    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
-    basic.pause(1000)
+    basic.pause(300)
+    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Left, 50)
+    basic.pause(800)
     Kitronik_Move_Motor.stop()
-    basic.pause(500)
-    Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 50)
-    basic.pause(500)
-    Kitronik_Move_Motor.stop()
-})
+    basic.pause(300)
+}
 ```
 
-Download and test. The robot should sit still until you press A.
+One right arc, one left arc. That's one full swing.
 
-## Step 2: Show a Ready Signal
-It would be useful to know when the robot is ready and when it is performing. Let's add some icons.
+## Step 3: Call forwardArc Twice on Button A
+From ``||input:Input||``, drag ``||input:on button A pressed||``.
 
-Add ``||basic:show icon||`` with a **small square** at the very start of ``||basic:on start||`` — this shows when the robot is ready and waiting.
-
-Then add ``||basic:show icon||`` with a **music note** at the start of your button A sequence — this shows when the routine is running.
+Add ``||basic:show icon||`` with a **music note** at the start. Then call ``||functions:forwardArc||`` **twice**. Then add ``||basic:show icon||`` with a **small square** at the end.
 
 ```blocks
-basic.showIcon(IconNames.SmallSquare)
-
 input.onButtonPressed(Button.A, function () {
     basic.showIcon(IconNames.Music)
-    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 50)
-    basic.pause(1000)
-    Kitronik_Move_Motor.stop()
-    basic.pause(500)
-    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
-    basic.pause(1000)
-    Kitronik_Move_Motor.stop()
-    basic.pause(500)
-    Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 50)
-    basic.pause(500)
-    Kitronik_Move_Motor.stop()
+    forwardArc()
+    forwardArc()
     basic.showIcon(IconNames.SmallSquare)
 })
 ```
 
-The square at the end brings the display back to "ready" when the routine finishes.
+Download and test. Press A — the robot should arc right, arc left, arc right, arc left.
 
-## Step 3: Extend Your Routine
-A good performance needs more than three moves. Add at least **four more moves** to your sequence.
+## Step 4: Create a backwardArc Function
+From ``||functions:Functions||``, make a new function called **backwardArc**.
 
-Think about:
-- Mixing fast and slow speeds
-- Short sharp moves vs long smooth ones
-- Spinning different directions
-- Pausing in place for dramatic effect — just a ``||basic:pause||`` with no movement
+Same pattern as forwardArc, but use **Reverse** instead of Right and Left.
 
-There is no right answer. You are choreographing a performance.
+```blocks
+function backwardArc () {
+    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
+    basic.pause(800)
+    Kitronik_Move_Motor.stop()
+    basic.pause(300)
+    Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
+    basic.pause(800)
+    Kitronik_Move_Motor.stop()
+    basic.pause(300)
+}
+```
 
-**If you finish early:** look at what the person next to you has made and give them one suggestion.
+## Step 5: Call backwardArc Twice on Button B
+Drag ``||input:on button B pressed||`` into the workspace. Same structure as button A — music note, call **backwardArc** twice, small square.
+
+```blocks
+input.onButtonPressed(Button.B, function () {
+    basic.showIcon(IconNames.Music)
+    backwardArc()
+    backwardArc()
+    basic.showIcon(IconNames.SmallSquare)
+})
+```
+
+Download and test. Press B — notice anything? The robot goes straight back instead of arcing. That's because **Reverse** doesn't use the turn radius setting. We'll fix that next.
+
+## Step 6: Adjust and Explore
+Try changing these and re-downloading each time:
+- The **turn radius** in ``||basic:on start||`` — try **Wide** or **Spot**
+- The **pause lengths** inside the functions — longer means bigger arcs
+- The **speed** — slower looks more graceful, faster looks more energetic
+
+Notice that changing the function changes **both** calls at once. That's the point of functions — one edit, everywhere it's used.
+
+## Step 7: Fix the Backward Arc with Motor Control
+To arc backwards, we need to control each motor individually and run them at **different speeds** — the outer motor faster, the inner motor slower. That speed difference is what creates the curve.
+
+Update your **backwardArc** function. Delete the Reverse blocks and replace them with individual motor blocks from ``||Kitronik_Move_Motor:Move Motor||``.
+
+For a **backward-right** arc: left motor is the outer wheel, so it runs faster.
+For a **backward-left** arc: right motor is the outer wheel, so it runs faster.
+
+```blocks
+function backwardArc () {
+    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Reverse, 50)
+    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Reverse, 25)
+    basic.pause(800)
+    Kitronik_Move_Motor.stop()
+    basic.pause(300)
+    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Reverse, 50)
+    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Reverse, 25)
+    basic.pause(800)
+    Kitronik_Move_Motor.stop()
+    basic.pause(300)
+}
+```
+
+Download and test. The backward routine should now arc in both directions.
+
+Try changing the slower motor's speed — **25** is half of 50, but experiment. A bigger difference means a tighter arc; a smaller difference means a gentler curve.
 
 ## Complete! @showdialog
-Your robot now waits for your signal before performing — just like a real stage performer.
+Your robot now has a two-part routine controlled by two buttons, with proper arcs in both directions.
 
-You've learned that **when** something runs matters just as much as **what** it does. Moving the sequence into a button press didn't change the moves at all, but it completely changed how useful the program is.
+Two things to take away. First, **functions**: one edit changes every place the function is called. Second, **abstraction levels**: `move Right` is a convenient shortcut that works well going forward, but sometimes you need to drop down to individual motor control to get exactly the behaviour you want.
 
-**Next tutorial:** you'll sync two robots together using radio, so they perform at exactly the same time.
+**Next tutorial:** you'll sync two robots using radio so they perform together at exactly the same time.
