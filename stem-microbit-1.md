@@ -1,11 +1,5 @@
 # Making Your Robot Move
 
-```template
-basic.forever(function () {
-    
-})
-```
-
 ## Introduction @showdialog
 Time to drive your robot!
 
