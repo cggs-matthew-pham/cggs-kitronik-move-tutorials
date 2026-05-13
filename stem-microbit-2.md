@@ -1,7 +1,7 @@
 # Your Robot's Dance Routine
 
 ```template
-Kitronik_Move_Motor.turnRadius(Kitronik_Move_Motor.TurnRadii.Tight)
+Kitronik_Move_Motor.turnRadius(Kitronik_Move_Motor.TurnRadii.Standard)
 basic.showIcon(IconNames.SmallSquare)
 ```
 
@@ -11,9 +11,9 @@ Your robot already knows how to move. Now it's going to **perform**.
 In this tutorial you'll choreograph a dance routine using arcs — curved moves that look much more interesting than straight lines. You'll use **functions** to keep your code tidy, and **two buttons** to control two different parts of the routine.
 
 ## Step 1: Set the Turn Radius
-Your template already has ``||Kitronik_Move_Motor:set turn radius Tight||`` in ``||basic:on start||``. This controls how sharply the robot curves — **Tight** means a small arc, **Wide** means a big sweeping curve.
+Your template already has ``||Kitronik_Move_Motor:set turn radius Standard||`` in ``||basic:on start||``. This controls how sharply the robot curves — **Tight** means a small arc, **Wide** means a big sweeping curve.
 
-Leave it on **Tight** for now. You can change it later and see what happens to the routine.
+Leave it on **Standard** for now. You can change it later and see what happens to the routine.
 
 ## Step 2: Create a forwardArc Function
 From ``||functions:Functions||`` (under Advanced), click **Make a Function**. Name it **forwardArc** and click Done.
@@ -87,7 +87,7 @@ Download and test. Press B — notice anything? The robot goes straight back ins
 
 ## Step 6: Adjust and Explore
 Try changing these and re-downloading each time:
-- The **turn radius** in ``||basic:on start||`` — try **Wide** or **Spot**
+- The **turn radius** in ``||basic:on start||`` — try **Tight** or **Wide**
 - The **pause lengths** inside the functions — longer means bigger arcs
 - The **speed** — slower looks more graceful, faster looks more energetic
 
