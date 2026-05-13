@@ -21,7 +21,10 @@
         "state-and-forever-loop.md",
         "adapting-line-following.md",
         "cycle-and-select.md",
-        "two-way-radio-roles.md"
+        "two-way-radio-roles.md",
+        "stem-microbit-1.md",
+        "stem-microbit-2.md",
+        "stem-microbit-3.md"
     ],
     "testFiles": [
         "test.ts"
