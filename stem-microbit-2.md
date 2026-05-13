@@ -98,5 +98,3 @@ Notice that changing the function changes both the move and every place it's cal
 Your robot now has two dance moves triggered by two buttons.
 
 The key idea is **functions**: write the move once, call it anywhere. In the next tutorial you'll add radio so a partner robot can mirror your moves — when yours wiggles left, theirs wiggles right.
-
-**Next tutorial:** partner dancing with radio.
