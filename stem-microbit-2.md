@@ -40,11 +40,11 @@ One right arc, one left arc. That's one full swing.
 ## Step 3: Call forwardArc Twice on Button A
 From ``||input:Input||``, drag ``||input:on button A pressed||``.
 
-Add ``||basic:show icon||`` with a **music note** at the start. Then call ``||functions:forwardArc||`` **twice**. Then add ``||basic:show icon||`` with a **small square** at the end.
+Add ``||basic:show icon||`` with an **eighth note** at the start. Then call ``||functions:forwardArc||`` **twice**. Then add ``||basic:show icon||`` with a **small square** at the end.
 
 ```blocks
 input.onButtonPressed(Button.A, function () {
-    basic.showIcon(IconNames.Music)
+    basic.showIcon(IconNames.EighthNote)
     forwardArc()
     forwardArc()
     basic.showIcon(IconNames.SmallSquare)
@@ -53,13 +53,13 @@ input.onButtonPressed(Button.A, function () {
 
 Download and test. Press A — the robot should arc right, arc left, arc right, arc left.
 
-## Step 4: Create a backwardArc Function
-From ``||functions:Functions||``, make a new function called **backwardArc**.
+## Step 4: Create a backwardSteps Function
+From ``||functions:Functions||``, make a new function called **backwardSteps**.
 
-Same pattern as forwardArc, but use **Reverse** instead of Right and Left.
+Two reverse moves with pauses — the robot steps straight back twice.
 
 ```blocks
-function backwardArc () {
+function backwardSteps () {
     Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
     basic.pause(800)
     Kitronik_Move_Motor.stop()
@@ -71,19 +71,19 @@ function backwardArc () {
 }
 ```
 
-## Step 5: Call backwardArc Twice on Button B
-Drag ``||input:on button B pressed||`` into the workspace. Same structure as button A — music note, call **backwardArc** twice, small square.
+## Step 5: Call backwardSteps Twice on Button B
+Drag ``||input:on button B pressed||`` into the workspace. Same structure as button A — eighth note, call **backwardSteps** twice, small square.
 
 ```blocks
 input.onButtonPressed(Button.B, function () {
-    basic.showIcon(IconNames.Music)
-    backwardArc()
-    backwardArc()
+    basic.showIcon(IconNames.EighthNote)
+    backwardSteps()
+    backwardSteps()
     basic.showIcon(IconNames.SmallSquare)
 })
 ```
 
-Download and test. Press B — notice anything? The robot goes straight back instead of arcing. That's because **Reverse** doesn't use the turn radius setting. We'll fix that next.
+Download and test. A does the forward routine, B does the backward routine.
 
 ## Step 6: Adjust and Explore
 Try changing these and re-downloading each time:
@@ -93,36 +93,9 @@ Try changing these and re-downloading each time:
 
 Notice that changing the function changes **both** calls at once. That's the point of functions — one edit, everywhere it's used.
 
-## Step 7: Fix the Backward Arc with Motor Control
-To arc backwards, we need to control each motor individually and run them at **different speeds** — the outer motor faster, the inner motor slower. That speed difference is what creates the curve.
-
-Update your **backwardArc** function. Delete the Reverse blocks and replace them with individual motor blocks from ``||Kitronik_Move_Motor:Move Motor||``.
-
-For a **backward-right** arc: left motor is the outer wheel, so it runs faster.
-For a **backward-left** arc: right motor is the outer wheel, so it runs faster.
-
-```blocks
-function backwardArc () {
-    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Reverse, 50)
-    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Reverse, 25)
-    basic.pause(800)
-    Kitronik_Move_Motor.stop()
-    basic.pause(300)
-    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorRight, Kitronik_Move_Motor.MotorDirection.Reverse, 50)
-    Kitronik_Move_Motor.motorOn(Kitronik_Move_Motor.Motors.MotorLeft, Kitronik_Move_Motor.MotorDirection.Reverse, 25)
-    basic.pause(800)
-    Kitronik_Move_Motor.stop()
-    basic.pause(300)
-}
-```
-
-Download and test. The backward routine should now arc in both directions.
-
-Try changing the slower motor's speed — **25** is half of 50, but experiment. A bigger difference means a tighter arc; a smaller difference means a gentler curve.
-
 ## Complete! @showdialog
-Your robot now has a two-part routine controlled by two buttons, with proper arcs in both directions.
+Your robot now has a two-part routine controlled by two buttons.
 
-Two things to take away. First, **functions**: one edit changes every place the function is called. Second, **abstraction levels**: `move Right` is a convenient shortcut that works well going forward, but sometimes you need to drop down to individual motor control to get exactly the behaviour you want.
+Two things to take away. First, **functions**: one edit changes every place the function is called. Second, **when** something runs matters as much as **what** it does — moving actions into button presses means the robot waits for your cue, just like a real performer.
 
 **Next tutorial:** you'll sync two robots using radio so they perform together at exactly the same time.
