@@ -1,5 +1,3 @@
-# Kitronik :MOVE Motor - Cycle-and-Select Controller
-
 ```template
 let leftSensor = 0
 let rightSensor = 0
