@@ -1,28 +1,4 @@
 ```template
-let leftSensor = 0
-let rightSensor = 0
-let sensorDifference = 0
-let FOLLOW = 0
-let GO = 0
-let STOP = 0
-let SPIN_LEFT = 0
-let SPIN_RIGHT = 0
-let REVERSE = 0
-let currentAction = 0
-let menuIndex = 0
-let channel = ""
-radio.setGroup(1)
-basic.showIcon(IconNames.SmallSquare)
-STOP = 0
-FOLLOW = 1
-GO = 2
-SPIN_LEFT = 3
-SPIN_RIGHT = 4
-REVERSE = 5
-channel = "Roger"
-currentAction = STOP
-menuIndex = STOP
-
 function followLine () {
     leftSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Left)
     rightSensor = Kitronik_Move_Motor.readSensor(Kitronik_Move_Motor.LfSensor.Right)
@@ -37,62 +13,49 @@ function followLine () {
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 30)
     }
 }
-
-function showCurrentAction () {
-    if (menuIndex == FOLLOW) {
-        currentAction = FOLLOW
-        basic.showArrow(ArrowNames.North)
-    } else if (menuIndex == GO) {
-        currentAction = GO
-        basic.showIcon(IconNames.Yes)
-    } else if (menuIndex == SPIN_LEFT) {
-        currentAction = SPIN_LEFT
-        basic.showArrow(ArrowNames.West)
-    } else if (menuIndex == SPIN_RIGHT) {
-        currentAction = SPIN_RIGHT
-        basic.showArrow(ArrowNames.East)
-    } else if (menuIndex == REVERSE) {
-        currentAction = REVERSE
-        basic.showArrow(ArrowNames.South)
-    } else {
-        currentAction = STOP
-        basic.showIcon(IconNames.No)
-    }
-}
-
 input.onButtonPressed(Button.A, function () {
-    menuIndex += 1
-    if (menuIndex > 5) {
-        menuIndex = 0
-    }
-    showCurrentAction()
-})
-input.onButtonPressed(Button.B, function () {
-    radio.sendValue(channel, menuIndex)
+    radio.sendValue(channel, GO)
 })
 input.onButtonPressed(Button.AB, function () {
-    menuIndex = STOP
     radio.sendValue(channel, STOP)
+})
+input.onButtonPressed(Button.B, function () {
+    radio.sendValue(channel, FOLLOW)
 })
 radio.onReceivedValue(function (name, value) {
     if (name == channel) {
-        menuIndex = value
-        showCurrentAction()
+        if (value == FOLLOW) {
+            currentAction = FOLLOW
+            basic.showIcon(IconNames.Diamond)
+        } else if (value == GO) {
+            currentAction = GO
+            basic.showArrow(ArrowNames.North)
+        } else {
+            currentAction = STOP
+            basic.showIcon(IconNames.SmallSquare)
+        }
     }
 })
+let sensorDifference = 0
+let rightSensor = 0
+let leftSensor = 0
+let currentAction = 0
+let channel = ""
+let GO = 0
+let FOLLOW = 0
+let STOP = 0
+radio.setGroup(1)
+basic.showIcon(IconNames.SmallSquare)
+STOP = 0
+FOLLOW = 1
+GO = 2
+channel = "Roger"
+currentAction = FOLLOW
 basic.forever(function () {
-    if (currentAction == STOP) {
-        Kitronik_Move_Motor.stop()
-    } else if (currentAction == FOLLOW) {
+    if (currentAction == FOLLOW) {
         followLine()
     } else if (currentAction == GO) {
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 30)
-    } else if (currentAction == SPIN_LEFT) {
-        Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 30)
-    } else if (currentAction == SPIN_RIGHT) {
-        Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Right, 30)
-    } else if (currentAction == REVERSE) {
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 30)
     } else {
         Kitronik_Move_Motor.stop()
     }
