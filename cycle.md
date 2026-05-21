@@ -50,7 +50,7 @@ STOP = 0
 FOLLOW = 1
 GO = 2
 channel = "Roger"
-currentAction = FOLLOW
+currentAction = STOP
 basic.forever(function () {
     if (currentAction == FOLLOW) {
         followLine()
@@ -87,6 +87,8 @@ By the end, your controller will support six commands:
 - Spin right
 - Reverse
 
+**Before you start:** check that `radio.setGroup()` and `channel` are set to your assigned values. Both micro:bits must use the same group and channel or they will not communicate.
+
 ## Step 1: Understand the Goal
 
 The current program sends commands directly from buttons.
@@ -122,7 +124,7 @@ SPIN_RIGHT = 4
 REVERSE = 5
 ```
 
-Also initialise the menu:
+Update your setup code so it starts at STOP:
 
 ```blocks
 currentAction = STOP
@@ -170,7 +172,7 @@ The icons are:
 | East arrow | SPIN RIGHT |
 | South arrow | REVERSE |
 
-Call it once at the end of your setup so the remote shows the starting state:
+Call it once at the end of your setup so both micro:bits show the starting state when the program loads:
 
 ```blocks
 showCurrentAction()
@@ -217,9 +219,7 @@ The remote no longer needs a separate button for each command. It only needs:
 
 ## Step 6: Update Button A+B
 
-Button A+B used to send STOP. Keep it — it is still useful as a quick-stop shortcut so you do not have to cycle back to STOP while the robot is moving.
-
-Update it so it also resets `menuIndex` to match:
+Button A+B already sends STOP. Update it so it also resets `menuIndex` to match — that way the remote display stays in sync after an emergency stop.
 
 ```blocks
 input.onButtonPressed(Button.AB, function () {
