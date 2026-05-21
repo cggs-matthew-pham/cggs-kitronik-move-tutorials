@@ -1,5 +1,3 @@
-# Kitronik :MOVE Motor - Patrol Mode (Optional Extension)
-
 ```template
 let leftSensor = 0
 let rightSensor = 0
