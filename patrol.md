@@ -90,15 +90,7 @@ Add ``||Kitronik_Move_Motor:measure distances in cm||`` to ``||basic:on start||`
 Kitronik_Move_Motor.measureDistancesIn(Kitronik_Move_Motor.DistanceUnit.Cm)
 ```
 
-## Step 2: Add the PATROL State Constant
-From ``||variables:Variables||``, create a new variable **PATROL**. In ``||basic:on start||``, set it to **3**.
-
-```blocks
-let PATROL = 0
-PATROL = 3
-```
-
-## Step 3: Create the patrol() Function
+## Step 2: Create the patrol() Function
 This is the core of the tutorial. Create a new function called **patrol**.
 
 Inside it, check the ultrasonic sensor first. If something is closer than **10 cm**, run the evasion sequence — stop, reverse, spin. Otherwise, follow the line as normal.
@@ -122,8 +114,8 @@ function patrol () {
 
 Notice the `else` branch just calls `followLine()` — you already have that function, so there's no need to repeat the sensor logic. Functions calling other functions is normal and good.
 
-## Step 4: Add the Forever Loop Branch
-Open your ``||basic:forever||`` loop. Add a new **else if** branch for PATROL, calling `patrol()`:
+## Step 3: Update the Forever Loop Branch
+Open your ``||basic:forever||`` loop. Replace the followLine action with patrol. Now your robot follows a line but reverses and turns around if it detects an obstacle.
 
 ```blocks
 let PATROL = 0
@@ -141,48 +133,7 @@ basic.forever(function () {
 })
 ```
 
-## Step 5: Add the Radio Dispatcher Branch
-Open your ``||radio:on radio received name value||`` handler. Add a new **else if** branch for PATROL:
-
-```blocks
-let channel = ""
-let PATROL = 0
-let currentAction = 0
-radio.onReceivedValue(function (name, value) {
-    if (name == channel) {
-        if (value == FOLLOW) {
-            currentAction = FOLLOW
-            basic.showIcon(IconNames.Diamond)
-        } else if (value == GO) {
-            currentAction = GO
-            basic.showArrow(ArrowNames.North)
-        } else if (value == PATROL) {
-            currentAction = PATROL
-            basic.showIcon(IconNames.Target)
-        } else {
-            currentAction = STOP
-            basic.showIcon(IconNames.SmallSquare)
-        }
-    }
-})
-```
-
-## Step 6: Add the Remote Button
-On the remote micro:bit, you currently use A, B, and A+B. There are no buttons left for a fourth command — which is exactly why the next tutorial introduces the cycle-and-select controller.
-
-For now, reassign one button temporarily to test PATROL. For example, swap A+B from STOP to PATROL:
-
-```blocks
-let channel = ""
-let PATROL = 0
-input.onButtonPressed(Button.AB, function () {
-    radio.sendValue(channel, PATROL)
-})
-```
-
-You'll lose the radio STOP command while testing, but the bot can still be stopped by hand or by downloading new code.
-
-## Step 7: Download and Test
+## Step 4: Download and Test
 Download to both micro:bits. Set up a line with an obstacle placed across it.
 
 - Press **B**: bot follows the line normally
@@ -199,8 +150,5 @@ You've built a function that combines two sensors and two behaviours into one au
 - If something is close, it runs the evasion sequence and returns
 - If nothing is close, it hands off to `followLine()` which checks the light sensors
 - Two sensors, one function, no extra state variables
-
-**The limitation worth thinking about:**
-The evasion sequence uses `basic.pause()`, which blocks everything for ~1.5 seconds. During that time the bot can't receive radio commands. For a simple patrol this is fine. For a bot that needs to be stoppable at any moment, you'd need a different approach — but that's a significantly harder problem.
 
 **Next tutorial**: with PATROL added, you now have four commands and only three button combinations. The **Cycle-and-Select Controller** shows how to send as many commands as you want using just two buttons.
