@@ -33,7 +33,9 @@
         "stem-microbit-3.md",
         "stem-microbit-4.md",
         "stem-microbit-5.md",
-        "stem-microbit-6.md"
+        "stem-microbit-6.md",
+        "stem-music-1.md",
+        "stem-music-2.md"
     ],
     "testFiles": [
         "test.ts"
