@@ -8,3 +8,7 @@ music.play(music.stringPlayable("C", 120), music.PlaybackMode.UntilDone)
 basic.forever(function () {
 	
 })
+
+input.onSound(DetectedSound.Loud, function () {
+    basic.showIcon(IconNames.Square)
+})
