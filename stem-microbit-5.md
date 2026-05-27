@@ -1,11 +1,6 @@
 ```template
 music.setBuiltInSpeakerEnabled(true)
-music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
 basic.showIcon(IconNames.SmallSquare)
-
-input.onSound(DetectedSound.Loud, function () {
-    basic.showIcon(IconNames.Square)
-})
 ```
 
 ## Introduction @showdialog
@@ -27,12 +22,8 @@ Also add ``||basic.showIcon(IconNames.SmallSquare)||``
 
 ```blocks
 radio.setGroup(1)
-music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
+music.setBuiltInSpeakerEnabled(true)
 basic.showIcon(IconNames.SmallSquare)
-
-input.onSound(DetectedSound.Loud, function () {
-    basic.showIcon(IconNames.Square)
-})
 ```
 
 ## Step 2: Create Phrase A
@@ -51,6 +42,7 @@ function phraseA () {
     radio.sendNumber(0)
     basic.showString("A")
     music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
+    
 }
 ```
 
