@@ -1,6 +1,19 @@
+# Melody Composer
+
 ```template
+radio.setGroup(1)
 music.setBuiltInSpeakerEnabled(true)
 basic.showIcon(IconNames.SmallSquare)
+
+function phraseA () {
+    radio.sendNumber(0)
+    basic.showString("A")
+    music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
+}
+
+function twinkle () {
+    phraseA()
+}
 ```
 
 ## Introduction @showdialog
@@ -15,10 +28,11 @@ The song has three distinct phrases:
 - **B** — How I wonder what you are
 - **C** — Up above the world so high
 
-## Step 1: Set Radio Group
+Phrase A is already in your workspace. Your job is to build B and C, then connect all three in the right order.
 
-From ``||radio:Radio||``, drag ``||radio:radio set group||`` into ``||basic:on start||``. Set it to **1** (or your agreed group number).
-Also add ``||basic.showIcon(IconNames.SmallSquare)||``
+## Step 1: Set Your Radio Group
+
+Find ``||radio:radio set group||`` in ``||basic:on start||``. Change the number to your agreed group — every micro:bit in your pair must use the same number, but different from other pairs in the room.
 
 ```blocks
 radio.setGroup(1)
@@ -26,36 +40,29 @@ music.setBuiltInSpeakerEnabled(true)
 basic.showIcon(IconNames.SmallSquare)
 ```
 
-## Step 2: Create Phrase A
+## Step 2: Explore Phrase A
 
-Create a new function called **phraseA**.
+Find the ``||functions:phraseA||`` function already in your workspace. It:
+- Sends radio number **0**
+- Shows the letter **A**
+- Plays: **C C G G A A G -**
 
-Inside it:
-- Add ``||radio:radio send number 0||``
-- Add ``||basic:show string "A"||``
-- Add a ``||music:play melody||`` block set to ``||music:until done||``
-
-Enter the notes: **C C G G A A G -**
+Press the play button in the simulator to hear it.
 
 ```blocks
 function phraseA () {
     radio.sendNumber(0)
     basic.showString("A")
     music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
-    
 }
 ```
 
 ## Step 3: Create Phrase B
 
-Create a new function called **phraseB**.
-
-Inside it:
-- Add ``||radio:radio send number 1||``
-- Add ``||basic:show string "B"||``
-- Add a ``||music:play melody||`` block set to ``||music:until done||``
-
-Enter the notes: **F F E E D D C -**
+Right-click ``||functions:phraseA||`` and duplicate it. Rename it **phraseB** and change:
+- Radio number to **1**
+- Show string to **"B"**
+- Notes to **F F E E D D C -**
 
 ```blocks
 function phraseB () {
@@ -67,14 +74,10 @@ function phraseB () {
 
 ## Step 4: Create Phrase C
 
-Create a new function called **phraseC**.
-
-Inside it:
-- Add ``||radio:radio send number 2||``
-- Add ``||basic:show string "C"||``
-- Add a ``||music:play melody||`` block set to ``||music:until done||``
-
-Enter the notes: **G G F F E E D -**
+Duplicate again, rename **phraseC** and change:
+- Radio number to **2**
+- Show string to **"C"**
+- Notes to **G G F F E E D -**
 
 ```blocks
 function phraseC () {
@@ -86,11 +89,9 @@ function phraseC () {
 
 ## Step 5: Build the Song
 
-Create a new function called **twinkle**.
+Find the ``||functions:twinkle||`` function. It currently only calls ``||functions:phraseA||``.
 
-Call the phrase functions in order: **A B C C A B**
-
-Each phrase uses ``||music:until done||`` so they play one after another automatically.
+Add the remaining calls in order: **A B C C A B**
 
 ```blocks
 function twinkle () {
@@ -103,11 +104,9 @@ function twinkle () {
 }
 ```
 
-## Step 6: Play on Button A
+## Step 6: Add a Button
 
-From ``||input:Input||``, drag ``||input:on button A pressed||``.
-
-Inside it, call ``||functions:twinkle||``, then show a ``||basic:small square||`` when it finishes.
+From ``||input:Input||``, drag ``||input:on button A pressed||``. Inside it, call ``||functions:twinkle||``, then show a ``||basic:small square||`` when it finishes.
 
 ```blocks
 input.onButtonPressed(Button.A, function () {
@@ -125,7 +124,7 @@ Check that:
 - The display shows A, B, or C as each phrase plays
 - The song ends and the square icon returns
 
-If phrases overlap or cut off, check that every ``||music:play melody||`` block is set to ``||music:until done||``.
+If phrases overlap or cut off, check that every play block is set to **until done**.
 
 ## Complete! @showdialog
 
