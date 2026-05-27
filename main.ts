@@ -4,6 +4,7 @@ input.onButtonPressed(Button.A, function () {
 input.onButtonPressed(Button.B, function () {
     Kitronik_Move_Motor.stop()
 })
+music.play(music.stringPlayable("C", 120), music.PlaybackMode.UntilDone)
 basic.forever(function () {
 	
 })
