@@ -44,6 +44,7 @@
         "target": "8.0.18",
         "targetId": "microbit"
     },
+    "compileServiceVariant": "v2",
     "supportedTargets": [
         "microbit"
     ],
