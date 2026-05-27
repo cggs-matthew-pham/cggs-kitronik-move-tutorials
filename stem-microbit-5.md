@@ -22,6 +22,7 @@ Also add ``||basic.showIcon(IconNames.SmallSquare)||``
 
 ```blocks
 radio.setGroup(1)
+music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
 basic.showIcon(IconNames.SmallSquare)
 ```
 
