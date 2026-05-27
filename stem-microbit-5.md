@@ -1,3 +1,8 @@
+```template
+music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
+basic.showIcon(IconNames.SmallSquare)
+```
+
 ## Introduction @showdialog
 
 In this tutorial you will program a micro:bit to play **Twinkle Twinkle Little Star** and broadcast which phrase is playing over radio.
