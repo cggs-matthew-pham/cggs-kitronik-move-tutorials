@@ -30,7 +30,25 @@ The song has three distinct phrases:
 
 Phrase A is already in your workspace. Your job is to build B and C, then connect all three in the right order.
 
-## Step 1: Set Your Radio Group
+## Step 1: Add a Button to Play
+
+From ``||input:Input||``, drag ``||input:on button A pressed||``. Inside it, call ``||functions:twinkle||``, then show a ``||basic:small square||`` when it finishes.
+
+Download and press **A** — you should hear just the first phrase playing.
+
+```blocks
+input.onButtonPressed(Button.A, function () {
+    twinkle()
+    basic.showIcon(IconNames.SmallSquare)
+})
+
+// @hide
+function twinkle() {
+    
+}
+```
+
+## Step 2: Set Your Radio Group
 
 Find ``||radio:radio set group||`` in ``||basic:on start||``. Change the number to your agreed group — every micro:bit in your pair must use the same number, but different from other pairs in the room.
 
@@ -40,14 +58,12 @@ music.setBuiltInSpeakerEnabled(true)
 basic.showIcon(IconNames.SmallSquare)
 ```
 
-## Step 2: Explore Phrase A
+## Step 3: Explore Phrase A
 
 Find the ``||functions:phraseA||`` function already in your workspace. It:
 - Sends radio number **0**
 - Shows the letter **A**
 - Plays: **C C G G A A G -**
-
-Press the play button in the simulator to hear it.
 
 ```blocks
 function phraseA () {
@@ -57,7 +73,7 @@ function phraseA () {
 }
 ```
 
-## Step 3: Create Phrase B
+## Step 4: Create Phrase B
 
 Right-click ``||functions:phraseA||`` and duplicate it. Rename it **phraseB** and change:
 - Radio number to **1**
@@ -72,7 +88,7 @@ function phraseB () {
 }
 ```
 
-## Step 4: Create Phrase C
+## Step 5: Create Phrase C
 
 Duplicate again, rename **phraseC** and change:
 - Radio number to **2**
@@ -87,11 +103,13 @@ function phraseC () {
 }
 ```
 
-## Step 5: Build the Song
+## Step 6: Build the Song
 
 Find the ``||functions:twinkle||`` function. It currently only calls ``||functions:phraseA||``.
 
 Add the remaining calls in order: **A B C C A B**
+
+Press **A** again — you should now hear the full song.
 
 ```blocks
 function twinkle () {
@@ -102,17 +120,13 @@ function twinkle () {
     phraseA()
     phraseB()
 }
-```
 
-## Step 6: Add a Button
-
-From ``||input:Input||``, drag ``||input:on button A pressed||``. Inside it, call ``||functions:twinkle||``, then show a ``||basic:small square||`` when it finishes.
-
-```blocks
-input.onButtonPressed(Button.A, function () {
-    twinkle()
-    basic.showIcon(IconNames.SmallSquare)
-})
+// @hide
+function phraseA () {}
+// @hide
+function phraseB () {}
+// @hide
+function phraseC () {}
 ```
 
 ## Step 7: Download and Test
