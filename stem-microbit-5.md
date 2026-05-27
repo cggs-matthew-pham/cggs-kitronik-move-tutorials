@@ -1,4 +1,5 @@
 ```template
+music.setBuiltInSpeakerEnabled(true)
 music.play(music.stringPlayable("C C G G A A G - ", 120), music.PlaybackMode.UntilDone)
 basic.showIcon(IconNames.SmallSquare)
 
