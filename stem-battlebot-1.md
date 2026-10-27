@@ -2,12 +2,11 @@
 
 ```template
 let channel = ""
-// CHANGE THIS: your robot's name - roger, rihanna, rocket, bob, bluey or biscuit
-channel = "roger"
+// CHANGE THIS: your robot's icon - duck, heart, ghost, rabbit, giraffe or snake
+channel = "duck"
 // CHANGE THIS: your team's group number
 radio.setGroup(101)
-basic.showString(channel)
-basic.showIcon(IconNames.Happy)
+basic.showIcon(IconNames.Duck)
 ```
 
 ## Introduction @showdialog
@@ -19,19 +18,19 @@ You'll write **one program** and put it on **two** micro:bits:
 
 Same code on both. The remote's buttons send commands; the robot listens and moves.
 
-## Step 1: Choose Your Group and Name
-Your template has two lines to change:
+## Step 1: Choose Your Group and Icon
+Your template has three things to change:
 - ``||radio:radio set group||`` — your **team's group number** (check with your teacher that nobody else is using it)
-- ``||variables:set channel to||`` — your **robot's name**
+- ``||basic:show icon||`` — pick your robot's **icon**. It stays on the screen so everyone can tell the robots apart
+- ``||variables:set channel to||`` — type your icon's **name**, e.g. **duck**
 
-Why both? The **group** keeps teams apart. The **name** is a second check — even if another team picks the same group by mistake, your robot only obeys messages with **its** name.
+Why a group **and** a name? The **group** keeps teams apart. The **name** is a second check — even if another team picks the same group by mistake, your robot only obeys messages with **its** name.
 
 ```blocks
 let channel = ""
-channel = "roger"
+channel = "duck"
 radio.setGroup(101)
-basic.showString(channel)
-basic.showIcon(IconNames.Happy)
+basic.showIcon(IconNames.Duck)
 ```
 
 ## Step 2: The Robot's Commands
@@ -137,7 +136,7 @@ Test with the remote:
 - **B** — it spins left and **keeps spinning**
 - **A+B** — it stops
 
-If nothing happens, check both micro:bits show the same name when they start up.
+If nothing happens, check both micro:bits show the same icon, and the same name is typed in ``||variables:set channel to||``.
 
 ## Step 8: Drive It
 Try to drive your robot to a target and stop on it. Then try a game of soccer.

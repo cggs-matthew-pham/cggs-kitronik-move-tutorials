@@ -4,10 +4,9 @@
 let lastHeard = 0
 let command = 0
 let channel = ""
-channel = "roger"
+channel = "duck"
 radio.setGroup(101)
-basic.showString(channel)
-basic.showIcon(IconNames.Happy)
+basic.showIcon(IconNames.Duck)
 command = 2
 radio.onReceivedValue(function (name, value) {
     if (name == channel) {

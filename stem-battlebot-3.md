@@ -2,10 +2,9 @@
 
 ```template
 let channel = ""
-channel = "roger"
+channel = "duck"
 radio.setGroup(101)
-basic.showString(channel)
-basic.showIcon(IconNames.Happy)
+basic.showIcon(IconNames.Duck)
 input.onButtonPressed(Button.A, function () {
     radio.sendValue(channel, 3)
 })
@@ -57,10 +56,9 @@ In ``||basic:on start||``, add ``||variables:set command to 2||`` so the robot s
 let lastHeard = 0
 let command = 0
 let channel = ""
-channel = "roger"
+channel = "duck"
 radio.setGroup(101)
-basic.showString(channel)
-basic.showIcon(IconNames.Happy)
+basic.showIcon(IconNames.Duck)
 command = 2
 ```
 
