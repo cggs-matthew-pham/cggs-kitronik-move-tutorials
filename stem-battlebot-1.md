@@ -35,7 +35,25 @@ radio.setGroup(101)
 basic.showIcon(IconNames.Duck)
 ```
 
-## Step 2: The Robot's Commands
+## Step 2: Team Colour
+Your Move has four colour lights on top. Use them to show which **team** your robot is on — easy to see from across the soccer pitch or sumo ring.
+
+From ``||Kitronik_Move_Motor:Move Motor||``, add these to the end of ``||basic:on start||``:
+- ``||variables:set teamLights to||`` ``||Kitronik_Move_Motor:Move Motor with 4 ZIP LEDs||``
+- ``||Kitronik_Move_Motor:teamLights show color red||``
+
+Your teacher will tell you which team you're on: **red** or **blue**. To swap teams later, just change the colour and download again.
+
+```blocks
+let channel = ""
+channel = "duck"
+radio.setGroup(101)
+let teamLights = Kitronik_Move_Motor.createMoveMotorZIPLED(4)
+teamLights.showColor(Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.Red))
+basic.showIcon(IconNames.Duck)
+```
+
+## Step 3: The Robot's Commands
 Robots don't understand words, so we use **numbers**. Here is the agreement between remote and robot:
 
 | Number | Move |
@@ -48,7 +66,7 @@ Robots don't understand words, so we use **numbers**. Here is the agreement betw
 
 There's no code in this step. Keep this table — every Battle Bot tutorial uses it.
 
-## Step 3: Listen for Your Name
+## Step 4: Listen for Your Name
 From ``||radio:Radio||``, drag ``||radio:on radio received name value||``.
 
 Inside it, add an ``||logic:if||`` block: if ``||variables:name||`` = ``||variables:channel||``.
@@ -63,7 +81,7 @@ radio.onReceivedValue(function (name, value) {
 })
 ```
 
-## Step 4: Forward, Spin and Stop
+## Step 5: Forward, Spin and Stop
 Inside the name check, add an ``||logic:if else if||`` that checks ``||variables:value||``:
 
 - **3** → ``||Kitronik_Move_Motor:move Forward at speed 50||``
@@ -86,7 +104,7 @@ radio.onReceivedValue(function (name, value) {
 })
 ```
 
-## Step 5: Teach It the Rest
+## Step 6: Teach It the Rest
 Your remote will only send three commands — but teach the robot **all five** anyway. You'll be glad later!
 
 Add two more ``||logic:else if||`` branches:
@@ -111,7 +129,7 @@ radio.onReceivedValue(function (name, value) {
 })
 ```
 
-## Step 6: The Remote's Buttons
+## Step 7: The Remote's Buttons
 Now the remote side. From ``||input:Input||``, add three button blocks. Each one sends a number with your robot's name:
 
 - ``||input:on button A pressed||`` → ``||radio:radio send value||`` ``||variables:channel||`` = **3** (forward)
@@ -130,7 +148,7 @@ input.onButtonPressed(Button.AB, function () {
 })
 ```
 
-## Step 7: Download to Both
+## Step 8: Download to Both
 Download and flash the code onto **both** micro:bits. Plug one into the Move and switch it on.
 
 Test with the remote:
@@ -140,7 +158,7 @@ Test with the remote:
 
 If nothing happens, check both micro:bits show the same icon, and the same name is typed in ``||variables:set channel to||``.
 
-## Step 8: Drive It
+## Step 9: Drive It
 Try to drive your robot to a target and stop on it. Then try a game of soccer.
 
 While you play, notice:
