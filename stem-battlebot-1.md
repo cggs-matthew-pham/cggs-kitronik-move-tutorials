@@ -24,6 +24,8 @@ Your template has three things to change:
 - ``||basic:show icon||`` — pick your robot's **icon**. It stays on the screen so everyone can tell the robots apart
 - ``||variables:set channel to||`` — type your icon's **name**, e.g. **duck**
 
+**Want your own icon?** Instead of ``||basic:show icon||``, use ``||basic:show leds||`` and draw your own 5×5 picture. Then make up a name for it — **8 letters or fewer**, no spaces. Check with your teacher that nobody else has the same one.
+
 Why a group **and** a name? The **group** keeps teams apart. The **name** is a second check — even if another team picks the same group by mistake, your robot only obeys messages with **its** name.
 
 ```blocks
