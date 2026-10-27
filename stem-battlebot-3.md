@@ -19,19 +19,14 @@ radio.onReceivedValue(function (name, value) {
     if (name == channel) {
         if (value == 3) {
             Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 50)
-            basic.showArrow(ArrowNames.North)
         } else if (value == 0) {
             Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 20)
-            basic.showArrow(ArrowNames.West)
         } else if (value == 2) {
             Kitronik_Move_Motor.stop()
-            basic.showIcon(IconNames.SmallSquare)
         } else if (value == 1) {
             Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Right, 20)
-            basic.showArrow(ArrowNames.East)
         } else if (value == 4) {
             Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
-            basic.showArrow(ArrowNames.South)
         }
     }
 })
@@ -93,8 +88,6 @@ radio.onReceivedValue(function (name, value) {
 From ``||basic:Basic||``, drag a ``||basic:forever||`` loop. Put your moves block inside it.
 
 Change every ``||variables:value||`` in it to ``||variables:command||``.
-
-Also **delete** the ``||basic:show arrow||`` and ``||basic:show icon||`` blocks. Each one takes over half a second to draw, which would make your robot slow to react.
 
 The forever loop checks ``||variables:command||`` again and again, many times every second.
 

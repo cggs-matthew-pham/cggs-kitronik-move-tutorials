@@ -65,22 +65,21 @@ radio.onReceivedValue(function (name, value) {
 ## Step 4: Forward, Spin and Stop
 Inside the name check, add an ``||logic:if else if||`` that checks ``||variables:value||``:
 
-- **3** → ``||Kitronik_Move_Motor:move Forward at speed 50||`` and ``||basic:show arrow North||``
-- **0** → ``||Kitronik_Move_Motor:spin Left at speed 20||`` and ``||basic:show arrow West||``
-- **2** → ``||Kitronik_Move_Motor:stop||`` and ``||basic:show icon small square||``
+- **3** → ``||Kitronik_Move_Motor:move Forward at speed 50||``
+- **0** → ``||Kitronik_Move_Motor:spin Left at speed 20||``
+- **2** → ``||Kitronik_Move_Motor:stop||``
+
+Why no arrows on the screen? Blocks like ``||basic:show arrow||`` take over half a second to draw. While the robot is drawing, it **can't listen** — so your robot would be slow to react. A battle bot needs to be fast!
 
 ```blocks
 radio.onReceivedValue(function (name, value) {
     if (name == channel) {
         if (value == 3) {
             Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 50)
-            basic.showArrow(ArrowNames.North)
         } else if (value == 0) {
             Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 20)
-            basic.showArrow(ArrowNames.West)
         } else if (value == 2) {
             Kitronik_Move_Motor.stop()
-            basic.showIcon(IconNames.SmallSquare)
         }
     }
 })
@@ -90,27 +89,22 @@ radio.onReceivedValue(function (name, value) {
 Your remote will only send three commands — but teach the robot **all five** anyway. You'll be glad later!
 
 Add two more ``||logic:else if||`` branches:
-- **1** → ``||Kitronik_Move_Motor:spin Right at speed 20||`` and ``||basic:show arrow East||``
-- **4** → ``||Kitronik_Move_Motor:move Reverse at speed 50||`` and ``||basic:show arrow South||``
+- **1** → ``||Kitronik_Move_Motor:spin Right at speed 20||``
+- **4** → ``||Kitronik_Move_Motor:move Reverse at speed 50||``
 
 ```blocks
 radio.onReceivedValue(function (name, value) {
     if (name == channel) {
         if (value == 3) {
             Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Forward, 50)
-            basic.showArrow(ArrowNames.North)
         } else if (value == 0) {
             Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Left, 20)
-            basic.showArrow(ArrowNames.West)
         } else if (value == 2) {
             Kitronik_Move_Motor.stop()
-            basic.showIcon(IconNames.SmallSquare)
         } else if (value == 1) {
             Kitronik_Move_Motor.spin(Kitronik_Move_Motor.SpinDirections.Right, 20)
-            basic.showArrow(ArrowNames.East)
         } else if (value == 4) {
             Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.Reverse, 50)
-            basic.showArrow(ArrowNames.South)
         }
     }
 })
