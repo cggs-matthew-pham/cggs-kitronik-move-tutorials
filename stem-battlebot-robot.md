@@ -251,7 +251,7 @@ Download and flash this code onto the micro:bit that goes **in the Move**. Switc
 
 Nothing will happen yet — it's waiting for a controller. Next, open the **Battle Bot: The Controller** tutorial in **MakeCode Arcade**:
 
-https://arcade.makecode.com/#tutorial:github:cggs-matthew-pham/arcade-tutorials/battlebot-controller
+https://arcade.makecode.com/#tutorial:github:cggs-matthew-pham/cggs-arcade-tutorials/battlebot-controller
 
 ## Complete! @showdialog
 Your robot is ready for battle.
