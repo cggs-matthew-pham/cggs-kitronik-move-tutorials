@@ -38,7 +38,9 @@
         "stem-music-2.md",
         "stem-servo-1.md",
         "stem-servo-2.md",
-        "stem-battlebot-robot.md"
+        "stem-battlebot-1.md",
+        "stem-battlebot-3.md",
+        "stem-battlebot-4.md"
     ],
     "testFiles": [
         "test.ts"
