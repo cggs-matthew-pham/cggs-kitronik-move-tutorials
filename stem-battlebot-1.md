@@ -66,8 +66,14 @@ moveMotorZIP.showColor(Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColo
 basic.showIcon(IconNames.Duck)
 ```
 
-## Step 3: The Robot's Commands
-Robots don't understand words, so we use **numbers**. Here is the agreement between remote and robot:
+## Step 3: How a Message Works
+Every radio message is like an **envelope**:
+- On the **front** is a **name** — who the message is for
+- **Inside** is a **value** — a number that says what to do
+
+Your remote will send envelopes with **your robot's name** on the front and a **number** inside. Your robot will check the name, then open it and read the number.
+
+Robots don't understand words like "forward", so the number stands for a move. Here is the agreement between remote and robot:
 
 | Number | Move |
 |---|---|
@@ -79,12 +85,18 @@ Robots don't understand words, so we use **numbers**. Here is the agreement betw
 
 There's no code in this step. Keep this table — every Battle Bot tutorial uses it.
 
-## Step 4: Listen for Your Name
+So an envelope that says **duck** on the front with **3** inside means: *"duck, go forward!"*
+
+## Step 4: Check the Name on the Envelope
 From ``||radio:Radio||``, drag ``||radio:on radio received name value||``.
 
-Inside it, add an ``||logic:if||`` block: if ``||variables:name||`` = ``||variables:channel||``.
+Look at the top of this block. It comes with two of its own variables: ``||variables:name||`` and ``||variables:value||``. They hold the envelope that just arrived — the **name** on the front and the **value** inside.
 
-Everything inside this ``||logic:if||`` only happens if the message was meant for **your** robot.
+Now add an ``||logic:if||`` block inside it, with an ``||logic:=||`` comparison:
+- On the **left**, put ``||variables:name||``. **Drag it straight off the top of the radio block** — don't make a new variable called name.
+- On the **right**, put ``||variables:channel||`` from ``||variables:Variables||``. That's the name **you** chose in Step 1.
+
+In plain words: *"Is the name on this envelope **my** name?"* If it is, the robot does what's inside. If not, the message was for another robot, so it ignores it.
 
 ```blocks
 radio.onReceivedValue(function (name, value) {
@@ -94,7 +106,9 @@ radio.onReceivedValue(function (name, value) {
 })
 ```
 
-## Step 5: Forward, Spin and Stop
+## Step 5: Open the Envelope
+The name matched, so now read the number inside. That's ``||variables:value||`` — drag it off the top of the radio block, just like you did with ``||variables:name||``.
+
 Inside the name check, add an ``||logic:if else if||`` that checks ``||variables:value||``:
 
 - **3** → ``||Kitronik_Move_Motor:move Forward at speed 50||``
@@ -143,7 +157,15 @@ radio.onReceivedValue(function (name, value) {
 ```
 
 ## Step 7: The Remote's Buttons
-Now the remote side. From ``||input:Input||``, add three button blocks. Each one sends a number with your robot's name:
+Now the remote side: making the envelopes.
+
+``||radio:radio send value||`` has two spaces, which match the two parts of the envelope:
+- The **first** space is the **name** on the front. Put ``||variables:channel||`` here, so every envelope has your robot's name on it.
+- The **second** space is the **value** inside — the number for the move.
+
+When your robot receives it, the first space arrives as ``||variables:name||`` and the second as ``||variables:value||``. That's how the remote and robot fit together.
+
+From ``||input:Input||``, add three button blocks:
 
 - ``||input:on button A pressed||`` → ``||radio:radio send value||`` ``||variables:channel||`` = **3** (forward)
 - ``||input:on button B pressed||`` → ``||radio:radio send value||`` ``||variables:channel||`` = **0** (spin left)
