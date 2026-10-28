@@ -6,8 +6,8 @@ let command = 0
 let channel = ""
 channel = "duck"
 radio.setGroup(101)
-let teamLights = Kitronik_Move_Motor.createMoveMotorZIPLED(4)
-teamLights.showColor(Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.Red))
+let moveMotorZIP = Kitronik_Move_Motor.createMoveMotorZIPLED(4)
+moveMotorZIP.showColor(Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.Red))
 basic.showIcon(IconNames.Duck)
 command = 2
 radio.onReceivedValue(function (name, value) {

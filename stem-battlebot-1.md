@@ -51,9 +51,9 @@ basic.showIcon(IconNames.Duck)
 ## Step 2: Team Colour
 Your Move has four colour lights on top. Use them to show which **team** your robot is on — easy to see from across the soccer pitch or sumo ring.
 
-From ``||Kitronik_Move_Motor:Move Motor||``, add these to the end of ``||basic:on start||``:
-- ``||variables:set teamLights to||`` ``||Kitronik_Move_Motor:Move Motor with 4 ZIP LEDs||``
-- ``||Kitronik_Move_Motor:teamLights show color red||``
+Open ``||Kitronik_Move_Motor:Move Motor||`` and click **Lights**. Add these to the end of ``||basic:on start||``:
+- ``||variables:set moveMotorZIP to||`` ``||Kitronik_Move_Motor:MOVE Motor with 4 ZIP LEDs||`` — you don't need to make the variable, this block comes with it
+- ``||Kitronik_Move_Motor:moveMotorZIP show color red||``
 
 Your teacher will tell you which team you're on: **red** or **blue**. To swap teams later, just change the colour and download again.
 
@@ -61,8 +61,8 @@ Your teacher will tell you which team you're on: **red** or **blue**. To swap te
 let channel = ""
 channel = "duck"
 radio.setGroup(101)
-let teamLights = Kitronik_Move_Motor.createMoveMotorZIPLED(4)
-teamLights.showColor(Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.Red))
+let moveMotorZIP = Kitronik_Move_Motor.createMoveMotorZIPLED(4)
+moveMotorZIP.showColor(Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.Red))
 basic.showIcon(IconNames.Duck)
 ```
 
